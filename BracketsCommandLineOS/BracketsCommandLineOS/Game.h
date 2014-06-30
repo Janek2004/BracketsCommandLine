@@ -13,13 +13,19 @@
 @property (nonatomic,strong) id team2;
 @property (nonatomic,strong) id left;
 @property (nonatomic,strong) id right;
-
+@property (nonatomic,strong) NSNumber * gameId;
+@property (nonatomic,strong) NSNumber * number;
 
 @property (nonatomic,strong) NSDate * date;
 @property (nonatomic, assign) BOOL finished;///? if it has score is finished if it's not it's not.
 @property (nonatomic, strong) id winner;
 @property (nonatomic,strong) NSNumber* team1Score;
 @property (nonatomic,strong) NSNumber* team2Score;
+
+@property BOOL visited;
+
+
+-(NSArray *)getChildrenNodes;
 
 //set winner
 //ser score

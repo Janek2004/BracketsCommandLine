@@ -9,5 +9,26 @@
 #import "Game.h"
 
 @implementation Game
+-(NSArray *)getChildrenNodes;{
+    NSMutableArray * array = [NSMutableArray new];
+    if(self.right){
+        [array addObject:self.right];
+    }
+
+    if(self.left){
+        [array addObject:self.left];
+    }
+    
+    return array;
+}
+
+-(NSString *)description{
+  id l=  [self.left gameId];
+  id r=  [self.right gameId];
+    
+    return [NSString stringWithFormat:@" \n Game Id %@ \n Number: %@ \n Children:%@ %@",self.gameId, self.number, l, r];
+    
+    
+}
 
 @end
