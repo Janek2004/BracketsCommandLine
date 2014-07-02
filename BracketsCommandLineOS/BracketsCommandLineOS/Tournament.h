@@ -31,9 +31,7 @@ typedef enum {
 -(void)addTeam:(NSString *)team;
 -(void)removeTeam:(id)team;
 
-//players
--(void)addPlayer:(id)player;
--(void)removePlayer:(id)player;
+
 
 -(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;
 

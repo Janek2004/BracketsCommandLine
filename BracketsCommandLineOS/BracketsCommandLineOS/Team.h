@@ -11,6 +11,8 @@
 @interface Team : NSObject
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSNumber * seed;
-
+//players
+-(void)addPlayer:(id)player;
+-(void)removePlayer:(id)player;
 
 @end

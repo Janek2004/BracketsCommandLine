@@ -44,6 +44,7 @@ Node is a game:
     @property NSUInteger numberOfGames;
     @property NSUInteger numberOfLevels;
     @property NSUInteger numberOfTeams;
+    @property NSUInteger numberOfFirstRoundGames;
 
 @end
 
@@ -63,53 +64,17 @@ Node is a game:
 
 -(void)buildBracketWithTeams:(NSArray *)teams
 {
+    self.root = NULL;
     self.numberOfGames = [self numberOfGamesForTeamsNumber:teams.count andMode:kSingleElimination];
     self.numberOfTeams = teams.count;
     
     for (int i=0; i<self.numberOfGames; i++) {
-        [self alternateAdditionWithId:i];
+        [self addGameWithId:i];
     }
-    
-   // [self displayBracket];
 }
 
-//-(void)addGameWithId:(int)gameId{
-//   
-//    if(!self.root){
-//        Game * game = [Game new];
-//        game.gameId = [NSNumber numberWithInt:gameId];
-//        
-//        self.root = game;
-//        [_games addObject:game];
-//        return;
-//    }
-//   
-//    
-//    if(self.root) {
-//        Game * game = _games.firstObject;
-//        Game * gl = [Game new];
-//        gl.gameId = [NSNumber numberWithInt:gameId];
-//        [_games addObject:gl];
-//        
-//        if(game.left == NULL){
-//            //create a new game
-//            game.left = gl;
-//            
-//        }
-//        else if(game.right == NULL){
-//            game.right = gl;
-//        }
-//        
-//        if(game.left != NULL && game.right != NULL){
-//            [_games removeObject:game];
-//            
-//            return;
-//        }
-//    }
-//}
 
-
--(void)alternateAdditionWithId:(int)gameId{
+-(void)addGameWithId:(int)gameId{
     NSMutableArray * queue=[NSMutableArray new];
     if(!self.root){
         Game * game = [Game new];
@@ -173,8 +138,7 @@ Node is a game:
         NSLog(@"Not enough Games");
         return;
     }
-    
-    
+
     NSLog(@"_________________________________________");
     
     if(!self.root) return;
@@ -187,12 +151,31 @@ Node is a game:
 
     NSUInteger nodesInCurrentLevel = 1;
     NSUInteger nodesInNextLevel = 0;
+    NSUInteger currentLevel = 1;
+    NSUInteger maxLevel = [self findClosestPower:self.teams.count];
+   
+    NSUInteger firstLevelGames =[self findNumberOfFirstRoundGames:pow(2,  maxLevel) andTeamsNumber:self.teams.count];
+
+    NSUInteger maxNumberOfGamesInFirstLevel =  pow(2, maxLevel-1);
+  //  NSLog(@"%lu %lu %s",firstLevelGames,maxNumberOfGamesInFirstLevel,__PRETTY_FUNCTION__);
     
+    NSUInteger difference =  maxNumberOfGamesInFirstLevel - firstLevelGames;
+    //the difference will have to be distributed in level maxLevel-1
+    [self sortArray:self.teams andStart:0 end:difference];
+    [self sortArray:self.teams andStart:difference end:self.teams.count];
+
+    NSLog(@"Sorted Array %@",self.teams);
     //get number of games;
     NSUInteger gn = self.numberOfGames;
     
+    
+    NSUInteger level1diff = difference;
+    NSUInteger level2diff=  difference;
+    
+    
+    
     while (queue.count >0) {
-        
+
         Game * game =queue.lastObject;
         game.number = [NSNumber numberWithInteger:gn];
         gn--;
@@ -200,27 +183,87 @@ Node is a game:
         [queue removeLastObject];
         nodesInCurrentLevel--;
 
-        NSLog(@"Game nr: %@", game.number);
+       
         
         //here we can look for some kind of data
+        if(currentLevel == maxLevel-1){
+           // NSLog(@"here we need populate the difference ");
+            //if it has both children than we leave it alone.
+            //if it has only one children we assign values from array starting from the left to right
+            if(game.left == NULL){
+                game.team1 = self.teams[level2diff-1];
+                level2diff--;
+            }
+            if(game.right == NULL){
+                game.team2 = self.teams[level2diff-1];
+                level2diff--;
+            
+            
+            }
+        }
+        
+        if(currentLevel == maxLevel){
+            Team * team1 = self.teams[level1diff];
+            Team * team2 = self.teams[++level1diff];
+            game.team1 =team1;
+            game.team2 =team2;
+            
+            level1diff++;
+        }
+        
         for(Game* child in [game getChildrenNodes]){
-            //NSLog(@"____Child %@",child);
             if(![visited containsObject:child])
             {
                 [visited addObject:child];
                 [queue insertObject:child atIndex:0];
+                 nodesInNextLevel++;
             }
-            nodesInNextLevel++;
         }
 
         if(nodesInCurrentLevel == 0){
             nodesInCurrentLevel = nodesInNextLevel;
+            nodesInNextLevel = 0;
+            currentLevel++;
             NSLog(@"\n");
         }
+        
+         NSLog(@"Game: %@", game);
+        
     }
     NSLog(@"_________________________________________");
 }
 
+
+-(NSArray *) sortArray:(NSMutableArray *) array andStart: (NSUInteger) start end: (NSUInteger) end{
+    NSUInteger length = array.count;
+    NSUInteger j = end -1;
+    if(end == 0)
+    {
+        j=0;
+    }
+    for(NSUInteger i =start; i<length; i++)
+    {
+        if(i>=j){
+            break;
+        }
+        id secondObject = array[i+1];
+       
+        //take last element
+        id lastObject = array[j];
+        array[j] = secondObject;
+        array[i+1] = lastObject;
+        
+        //decrement j
+        if(j>=2){
+            j=j-2;
+        }
+        else{
+            break;
+        }
+        i =i+1;
+    }
+    return array;
+}
 
 //Calculates maximum number of games in one level
 -(NSUInteger)maxNumberOfGamesInLevelForTeams:(int)numberOfTeams{
@@ -229,14 +272,6 @@ Node is a game:
     return pow(2, power-1);
 }
 
-
--(void)addPlayer:(id)player;{
-
-}
-
--(void)removePlayer:(id)player;{
-
-}
 
 -(NSUInteger)findClosestPower:(NSUInteger)teams{
     NSUInteger k =1;
@@ -249,49 +284,82 @@ Node is a game:
     return power;
 }
 
+-(NSUInteger)findNumberOfLevelsForTeams:(NSUInteger)teamsNumber{
+    [self findClosestPower:teamsNumber];
+    
+    return 0;
+}
+
+-(NSUInteger)findNumberOfFirstRoundGames:(NSUInteger)gameCount andTeamsNumber:(NSUInteger)teamsNumber{
+    NSUInteger difference =gameCount - teamsNumber;
+    NSUInteger k = gameCount/2.0 - difference;
+    self.numberOfFirstRoundGames = k;
+    
+    return _numberOfFirstRoundGames;
+}
+
 -(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;{
     //calculate round 1
     NSUInteger closestPower =[self findClosestPower:teamsNumber];
-    // NSLog(@"Closest Power %d",closestPower);
+    NSLog(@"Closest Power %lu",(unsigned long)closestPower);
     NSUInteger gameCount = pow(2, closestPower);
-    NSUInteger difference =gameCount - teamsNumber;
-    NSUInteger k = gameCount/2.0 - difference;
-    // NSLog(@"Number of games in first round is: %d",k);
+    
+    NSUInteger numberOfGamesInFirstRound = [self findNumberOfFirstRoundGames:gameCount andTeamsNumber:teamsNumber];
+    
     NSUInteger num = gameCount/2;
     while (num/2>=1)
     {
         num = num/2;
-        k+=num;
+        numberOfGamesInFirstRound+=num;
     }
     
-    NSLog(@"Total number of games is: %lu",(unsigned long)k);
-    return k;
+
+    return numberOfGamesInFirstRound;
 }
 
 -(void)addTeam:(NSString *)teamName{
     Team * team = [Team new];
     team.name = teamName;
-
+    
+    //reset bracket
     [self.teams addObject:team];
+    int i =1;
+    for(id team in self.teams){
+        [team setSeed:[NSNumber numberWithInt:i]];
+        i++;
+    }
+    
     [self buildBracketWithTeams:self.teams];
     
     //recalculate bracket
     [self displayBracket];
 }
 
--(void)removeTeam:(id)team;{
 
-}
 
--(void)addScore:(id)team1 andTeam2:(id)team2 winner:(id)team score1:(id)team1score score2:(id)team2score{
+//add score
+-(void)addScoreForGame:(id)gameId winner:(id)team score1:(id)scoreTeam1 score2:(id)scoreTeam2;{
+//find a game with particular id
+    NSMutableArray * queue = [NSMutableArray new];
+    NSMutableArray * visited = [NSMutableArray new];
     
+    [queue addObject:self.root];
+    [visited addObject:self.root];
+    
+    while(queue.count>0){
+        //get last object
+        Game * g = queue.lastObject;
+        if([g.gameId isEqual:@([gameId intValue] )])
+        {
+           //set score
+            
+            return;
+        }
+        
+        
+        
+        
+    }
+
 }
-
-
-
-
-
-
-
-
 @end

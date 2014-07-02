@@ -9,16 +9,73 @@
 #import <Foundation/Foundation.h>
 #import "Tournament.h"
 
+NSArray * sortArr(NSMutableArray * array, NSUInteger start){
+    
+    NSUInteger length = array.count;
+    NSUInteger j = length -1;
+    for(NSUInteger i =start; i<length; i++)
+    {
+        if(i>=j){
+            break;
+        }
+        id secondObject = array[i+1];
+        //take last element
+        id lastObject = array[j];
+        array[j] = secondObject;
+        array[i+1] = lastObject;
+        
+        //decrement j
+        j=j-2;
+        i =i+1;
+       
+    }
+    
+    //take last element
+    NSLog(@"%@",array);
+    
+    
+    return [NSArray new];
+}
+
+
+
 int main(int argc, const char * argv[])
 {
     @autoreleasepool {
-        
-        Tournament * t = [[Tournament alloc]init ]; 
+   
+        Tournament * t = [[Tournament alloc]init ];
         [t addTeam:@"Janek / Taylor"];
         [t addTeam:@"Keith/Megan "];
         [t addTeam:@"Charlie/Chelsea"];
-        [t addTeam:@"Eric/Megan"];
+        [t addTeam:@"Eric/Meghan"];
+        [t addTeam:@"Jack/Michelle"];
+        [t addTeam:@"Ian/Patchi"];
+        [t addTeam:@"Mallory/Zack"];
+//        [t addTeam:@"Whitney/Adrian "];
+//        [t addTeam:@"Charlie/Chelsea"];
+//        [t addTeam:@"Charlie/Chelsea"];
+//        [t addTeam:@"Charlie/Chelsea"];
         
+        
+   //     [t addTeam:@"Keith/Megan "];
+   //     [t addTeam:@"Charlie/Chelsea"];
+     
+     
+        NSMutableArray * array =[@[@1,@2,@3,@4,@5,@6,@7] mutableCopy];
+        //take first n elements
+        
+        
+      // sortArr(array,1);
+       // int i =0;
+       // int j = array.count-1;
+        
+       
+        //NSLog(@"%@",array);
+        
+        
+        
+    // [t addTeam:@"Charlie/Chelsea"];
+    // [t addTeam:@"Charlie/Chelsea"];
         
      // Team * team = [Team new]
      //   Tournament * t1 = [[Tournament alloc]initWithNumberOfTeams:4];
