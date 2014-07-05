@@ -34,11 +34,12 @@ typedef enum {
 
 
 -(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;
-
--(void)addScore:(id)team1 andTeam2:(id)team2 winner:(id)team score1:(id)team1 score2:(id)team2;
+-(void)buildBracketFor:(TournamentMode)mode;
 -(void)displayBracket;
 -(void)setTournamentMode:(TournamentMode)tournamentMode;
+-(id)searchForGame:(id)game;
 
+-(void)setScore:(id)team1Score and:(id)team2Score game:(id)game finalScore:(BOOL)final;
 
 -(NSUInteger)maxNumberOfGamesInLevelForTeams:(int)numberOfTeams;
 

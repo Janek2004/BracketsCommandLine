@@ -7,8 +7,26 @@
 //
 
 #import "Team.h"
+#import "Stats.h"
+#import "Game.h"
+
+@interface Team()
+    @property(nonatomic,strong)Stats * stats;
+@end
+
 
 @implementation Team
+
+
+-(instancetype)init{
+    if(self = [super init]){
+        
+    }
+    return self;
+}
+
+
+
 //players
 -(void)addPlayer:(id)player;{}
 -(void)removePlayer:(id)player;{}

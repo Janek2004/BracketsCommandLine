@@ -8,41 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import "Tournament.h"
-
-NSArray * sortArr(NSMutableArray * array, NSUInteger start){
-    
-    NSUInteger length = array.count;
-    NSUInteger j = length -1;
-    for(NSUInteger i =start; i<length; i++)
-    {
-        if(i>=j){
-            break;
-        }
-        id secondObject = array[i+1];
-        //take last element
-        id lastObject = array[j];
-        array[j] = secondObject;
-        array[i+1] = lastObject;
-        
-        //decrement j
-        j=j-2;
-        i =i+1;
-       
-    }
-    
-    //take last element
-    NSLog(@"%@",array);
-    
-    
-    return [NSArray new];
-}
-
+#import "Game.h"
+#import "Stats.h"
 
 
 int main(int argc, const char * argv[])
 {
     @autoreleasepool {
-   
         Tournament * t = [[Tournament alloc]init ];
         [t addTeam:@"Janek / Taylor"];
         [t addTeam:@"Keith/Megan "];
@@ -51,7 +23,15 @@ int main(int argc, const char * argv[])
         [t addTeam:@"Jack/Michelle"];
         [t addTeam:@"Ian/Patchi"];
         [t addTeam:@"Mallory/Zack"];
-//        [t addTeam:@"Whitney/Adrian "];
+        [t addTeam:@"Whitney/Adrian "];
+
+        Game * g = [Game new];
+        g.number =@4;
+        Game * result = [t searchForGame: g];
+        NSLog(@"Result %@",result);
+        
+        //t recursiveAddScore:<#(id)#> search:<#(id)#>
+        
 //        [t addTeam:@"Charlie/Chelsea"];
 //        [t addTeam:@"Charlie/Chelsea"];
 //        [t addTeam:@"Charlie/Chelsea"];
@@ -61,7 +41,7 @@ int main(int argc, const char * argv[])
    //     [t addTeam:@"Charlie/Chelsea"];
      
      
-        NSMutableArray * array =[@[@1,@2,@3,@4,@5,@6,@7] mutableCopy];
+   //     NSMutableArray * array =[@[@1,@2,@3,@4,@5,@6,@7] mutableCopy];
         //take first n elements
         
         

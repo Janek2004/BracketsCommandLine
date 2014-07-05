@@ -10,11 +10,12 @@
 		822DC460195684DF0001203D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 822DC45F195684DE0001203D /* Foundation.framework */; };
 		822DC463195684DF0001203D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC462195684DF0001203D /* main.m */; };
 		822DC467195684DF0001203D /* BracketsCommandLineOS.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 822DC466195684DF0001203D /* BracketsCommandLineOS.1 */; };
-		822DC46F195685260001203D /* Bracket.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC46E195685260001203D /* Bracket.m */; };
 		822DC472195685540001203D /* Player.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC471195685540001203D /* Player.m */; };
 		822DC475195685C40001203D /* Team.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC474195685C40001203D /* Team.m */; };
 		822DC4781956862E0001203D /* Tournament.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC4771956862E0001203D /* Tournament.m */; };
 		822DC47B19569B720001203D /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC47A19569B720001203D /* Game.m */; };
+		827F6DBE19651639003C8EFD /* Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DBD19651639003C8EFD /* Stats.m */; };
+		827F6DC11966F85E003C8EFD /* Score.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC01966F85E003C8EFD /* Score.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,8 +37,6 @@
 		822DC462195684DF0001203D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		822DC465195684DF0001203D /* BracketsCommandLineOS-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BracketsCommandLineOS-Prefix.pch"; sourceTree = "<group>"; };
 		822DC466195684DF0001203D /* BracketsCommandLineOS.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = BracketsCommandLineOS.1; sourceTree = "<group>"; };
-		822DC46D195685260001203D /* Bracket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bracket.h; sourceTree = "<group>"; };
-		822DC46E195685260001203D /* Bracket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Bracket.m; sourceTree = "<group>"; };
 		822DC470195685540001203D /* Player.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Player.h; sourceTree = "<group>"; };
 		822DC471195685540001203D /* Player.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Player.m; sourceTree = "<group>"; };
 		822DC473195685C40001203D /* Team.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
@@ -46,6 +45,10 @@
 		822DC4771956862E0001203D /* Tournament.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tournament.m; sourceTree = "<group>"; };
 		822DC47919569B720001203D /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Game.h; sourceTree = "<group>"; };
 		822DC47A19569B720001203D /* Game.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Game.m; sourceTree = "<group>"; };
+		827F6DBC19651639003C8EFD /* Stats.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Stats.h; sourceTree = "<group>"; };
+		827F6DBD19651639003C8EFD /* Stats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stats.m; sourceTree = "<group>"; };
+		827F6DBF1966F85E003C8EFD /* Score.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Score.h; sourceTree = "<group>"; };
+		827F6DC01966F85E003C8EFD /* Score.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Score.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,16 +94,18 @@
 				822DC462195684DF0001203D /* main.m */,
 				822DC466195684DF0001203D /* BracketsCommandLineOS.1 */,
 				822DC464195684DF0001203D /* Supporting Files */,
-				822DC46D195685260001203D /* Bracket.h */,
-				822DC46E195685260001203D /* Bracket.m */,
 				822DC4761956862E0001203D /* Tournament.h */,
 				822DC4771956862E0001203D /* Tournament.m */,
 				822DC47919569B720001203D /* Game.h */,
 				822DC47A19569B720001203D /* Game.m */,
+				827F6DBF1966F85E003C8EFD /* Score.h */,
+				827F6DC01966F85E003C8EFD /* Score.m */,
 				822DC470195685540001203D /* Player.h */,
 				822DC471195685540001203D /* Player.m */,
 				822DC473195685C40001203D /* Team.h */,
 				822DC474195685C40001203D /* Team.m */,
+				827F6DBC19651639003C8EFD /* Stats.h */,
+				827F6DBD19651639003C8EFD /* Stats.m */,
 			);
 			path = BracketsCommandLineOS;
 			sourceTree = "<group>";
@@ -166,9 +171,10 @@
 			files = (
 				822DC4781956862E0001203D /* Tournament.m in Sources */,
 				822DC475195685C40001203D /* Team.m in Sources */,
-				822DC46F195685260001203D /* Bracket.m in Sources */,
 				822DC47B19569B720001203D /* Game.m in Sources */,
+				827F6DBE19651639003C8EFD /* Stats.m in Sources */,
 				822DC472195685540001203D /* Player.m in Sources */,
+				827F6DC11966F85E003C8EFD /* Score.m in Sources */,
 				822DC463195684DF0001203D /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -283,6 +289,7 @@
 				822DC46C195684DF0001203D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

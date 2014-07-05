@@ -1,32 +1,10 @@
-//
+
 //  Tournament.m
 //  BracketsCommandLineOS
-//
+
 //  Created by sadmin on 6/21/14.
 //  Copyright (c) 2014 Janusz Chudzynski. All rights reserved.
-//
-/**
- Tournament
-    Games
-        Teams
-            Players
- 
- 
-Node is a game:
- with paramaters:
- finished
- array:
-    team a
-    team b
- team a result
- team b result
- winner: id
- date NSDate
- 
- //traverse
-
- http://stackoverflow.com/questions/22859730/generate-a-single-elimination-tournament
-*/
+// http://stackoverflow.com/questions/22859730/generate-a-single-elimination-tournament
 
 #import "Tournament.h"
 #import "Game.h"
@@ -36,7 +14,7 @@ Node is a game:
 {
 
 }
-   // @property (nonatomic,strong)NSMutableArray * games;
+
     @property (nonatomic,strong)NSMutableArray * teams;
     @property (nonatomic,strong)NSMutableArray * players;
     @property (nonatomic,strong)Game * root; // it will be actually last game
@@ -61,6 +39,23 @@ Node is a game:
 }
 
 
+-(void)buildBracketFor:(TournamentMode)mode;{
+    
+    switch (mode) {
+        case kSingleElimination:
+            [self buildBracketWithTeams:self.teams];
+            break;
+        case kDoubleElimination:
+
+            break;
+        case kRoundRobin:
+            
+            break;
+            
+        default:
+            break;
+    }
+}
 
 -(void)buildBracketWithTeams:(NSArray *)teams
 {
@@ -73,7 +68,7 @@ Node is a game:
     }
 }
 
-
+/**Adding game to game tree using breadth depth search */
 -(void)addGameWithId:(int)gameId{
     NSMutableArray * queue=[NSMutableArray new];
     if(!self.root){
@@ -86,8 +81,7 @@ Node is a game:
     }
     
     [queue addObject:self.root];
-    
-    
+
     while(queue.count>0){
         Game * root =  queue.lastObject;
         //remove
@@ -96,18 +90,17 @@ Node is a game:
             Game * game = [Game new];
             game.gameId = [NSNumber numberWithInt:gameId];
             root.left  = game;
+            [game setParent:root];
             return;
         }
-        
         else if(root.right == NULL){
             Game * game = [Game new];
             game.gameId = [NSNumber numberWithInt:gameId];
             root.right = game;
+             [game setParent:root];
             return;
         }
         else{
-            //both of nodes are taken time to remove it from the queue
-            //and add children to the queue for further examination
             NSArray * a = [root getChildrenNodes];
             for(Game * child in a){
                 [queue insertObject:child atIndex:0];
@@ -115,7 +108,7 @@ Node is a game:
         }
     }
 }
-
+/** Tournament Mode */
 -(void)setTournamentMode:(TournamentMode)tournamentMode{
     _tournamentMode = tournamentMode;
 }
@@ -125,7 +118,6 @@ Node is a game:
     self = [self init];
    
     
-  // [self buildBracketWithTeams:<#(NSArray *)#>]
     
     
     return self;
@@ -138,16 +130,14 @@ Node is a game:
         NSLog(@"Not enough Games");
         return;
     }
-
-    NSLog(@"_________________________________________");
     
     if(!self.root) return;
     
     NSMutableArray * queue = [NSMutableArray new];
-    NSMutableArray * visited = [NSMutableArray new];
+    NSMutableArray * _visited = [NSMutableArray new];
     
     [queue addObject:self.root];
-    [visited addObject:self.root];
+    [_visited addObject:self.root];
 
     NSUInteger nodesInCurrentLevel = 1;
     NSUInteger nodesInNextLevel = 0;
@@ -157,22 +147,18 @@ Node is a game:
     NSUInteger firstLevelGames =[self findNumberOfFirstRoundGames:pow(2,  maxLevel) andTeamsNumber:self.teams.count];
 
     NSUInteger maxNumberOfGamesInFirstLevel =  pow(2, maxLevel-1);
-  //  NSLog(@"%lu %lu %s",firstLevelGames,maxNumberOfGamesInFirstLevel,__PRETTY_FUNCTION__);
     
     NSUInteger difference =  maxNumberOfGamesInFirstLevel - firstLevelGames;
     //the difference will have to be distributed in level maxLevel-1
     [self sortArray:self.teams andStart:0 end:difference];
     [self sortArray:self.teams andStart:difference end:self.teams.count];
 
-    NSLog(@"Sorted Array %@",self.teams);
+   // NSLog(@"Sorted Array %@",self.teams);
     //get number of games;
     NSUInteger gn = self.numberOfGames;
     
-    
     NSUInteger level1diff = difference;
     NSUInteger level2diff=  difference;
-    
-    
     
     while (queue.count >0) {
 
@@ -182,8 +168,6 @@ Node is a game:
         //remove from queue
         [queue removeLastObject];
         nodesInCurrentLevel--;
-
-       
         
         //here we can look for some kind of data
         if(currentLevel == maxLevel-1){
@@ -197,8 +181,6 @@ Node is a game:
             if(game.right == NULL){
                 game.team2 = self.teams[level2diff-1];
                 level2diff--;
-            
-            
             }
         }
         
@@ -212,9 +194,9 @@ Node is a game:
         }
         
         for(Game* child in [game getChildrenNodes]){
-            if(![visited containsObject:child])
+            if(![_visited containsObject:child])
             {
-                [visited addObject:child];
+                [_visited addObject:child];
                 [queue insertObject:child atIndex:0];
                  nodesInNextLevel++;
             }
@@ -224,16 +206,69 @@ Node is a game:
             nodesInCurrentLevel = nodesInNextLevel;
             nodesInNextLevel = 0;
             currentLevel++;
-            NSLog(@"\n");
+           // NSLog(@"\n");
         }
-        
-         NSLog(@"Game: %@", game);
-        
     }
-    NSLog(@"_________________________________________");
+   // NSLog(@"_________________________________________");
 }
 
 
+-(void)addTeam:(NSString *)teamName{
+    Team * team = [Team new];
+    team.name = teamName;
+    
+    //reset bracket
+    [self.teams addObject:team];
+    int i =1;
+    for(id team in self.teams){
+        [team setSeed:[NSNumber numberWithInt:i]];
+        i++;
+    }
+    
+    [self buildBracketWithTeams:self.teams];
+    
+    //recalculate bracket
+    [self displayBracket];
+}
+
+-(void)removeTeam:(id)team{
+    [self.teams removeObject:team];
+    
+    [self.teams enumerateObjectsUsingBlock:^(Team * team, NSUInteger idx, BOOL *stop) {
+         [team setSeed:[NSNumber numberWithInteger:idx]];
+    }];
+
+    [self buildBracketWithTeams:self.teams];
+    
+}
+
+
+
+/**
+ Methods for searching for games
+ */
+-(void)setScore:(id)team1Score and:(id)team2Score game:(id)game finalScore:(BOOL)final;{
+    Game * foundGame = [self searchForGame:game];
+    foundGame.team1Score = team1Score;
+    foundGame.team2Score = team2Score;
+    
+    id winner = foundGame.team1Score>foundGame.team2Score?foundGame.team1 : foundGame.team2;
+    
+    //draw graph
+    if([foundGame.parent left] == foundGame){
+        foundGame.team1 =winner;
+    }
+    if([foundGame.parent right] == foundGame){
+        foundGame.team2 =winner;
+    }
+}
+
+
+
+
+#pragma mark utilities
+
+/**Sorting teams */
 -(NSArray *) sortArray:(NSMutableArray *) array andStart: (NSUInteger) start end: (NSUInteger) end{
     NSUInteger length = array.count;
     NSUInteger j = end -1;
@@ -301,7 +336,7 @@ Node is a game:
 -(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;{
     //calculate round 1
     NSUInteger closestPower =[self findClosestPower:teamsNumber];
-    NSLog(@"Closest Power %lu",(unsigned long)closestPower);
+    //NSLog(@"Closest Power %lu",(unsigned long)closestPower);
     NSUInteger gameCount = pow(2, closestPower);
     
     NSUInteger numberOfGamesInFirstRound = [self findNumberOfFirstRoundGames:gameCount andTeamsNumber:teamsNumber];
@@ -317,49 +352,28 @@ Node is a game:
     return numberOfGamesInFirstRound;
 }
 
--(void)addTeam:(NSString *)teamName{
-    Team * team = [Team new];
-    team.name = teamName;
-    
-    //reset bracket
-    [self.teams addObject:team];
-    int i =1;
-    for(id team in self.teams){
-        [team setSeed:[NSNumber numberWithInt:i]];
-        i++;
-    }
-    
-    [self buildBracketWithTeams:self.teams];
-    
-    //recalculate bracket
-    [self displayBracket];
+
+
+-(id)searchForGame:(id)game;{
+    return [self recursiveSearch:self.root search:game];
 }
 
-
-
-//add score
--(void)addScoreForGame:(id)gameId winner:(id)team score1:(id)scoreTeam1 score2:(id)scoreTeam2;{
-//find a game with particular id
-    NSMutableArray * queue = [NSMutableArray new];
-    NSMutableArray * visited = [NSMutableArray new];
-    
-    [queue addObject:self.root];
-    [visited addObject:self.root];
-    
-    while(queue.count>0){
-        //get last object
-        Game * g = queue.lastObject;
-        if([g.gameId isEqual:@([gameId intValue] )])
-        {
-           //set score
-            
-            return;
+-(Game *)recursiveSearch:(Game *)game search:(Game *)element{
+    if(game!=NULL){
+        if([game.number isEqual:element.number]){
+            return game;
         }
         
-        
-        
-        
+        Game * foundNode = [self recursiveSearch:game.left search:element];
+        if(foundNode == NULL){
+           foundNode = [self recursiveSearch:game.right search:element];
+        }
+        return foundNode;
     }
-
+    else{
+        return NULL;
+    }
+    
 }
+
 @end
