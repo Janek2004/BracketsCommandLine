@@ -16,13 +16,9 @@
 @property (nonatomic,strong) id parent;
 @property (nonatomic,strong) NSNumber * gameId;
 @property (nonatomic,strong) NSNumber * number;
-
 @property (nonatomic,strong) NSDate * date;
-@property (nonatomic, assign) BOOL finished;///? if it has score is finished if it's not it's not.
-
-
+@property (nonatomic, assign) BOOL finished;// if it has score is finished if it's not it's not.
 @property(nonatomic, strong)id score;
-
 
 @property BOOL visited;
 

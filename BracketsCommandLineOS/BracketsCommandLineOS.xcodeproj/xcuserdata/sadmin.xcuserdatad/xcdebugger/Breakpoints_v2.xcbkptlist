@@ -9,29 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BracketsCommandLineOS/Tournament.m"
-            timestampString = "426042850.857234"
+            filePath = "BracketsCommandLineOS/Score.m"
+            timestampString = "426399648.321523"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "199"
-            endingLineNumber = "199"
-            landmarkName = "-displayBracket"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BracketsCommandLineOS/Tournament.m"
-            timestampString = "426042850.857234"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
-            landmarkName = "-displayBracket"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "-getWinner"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

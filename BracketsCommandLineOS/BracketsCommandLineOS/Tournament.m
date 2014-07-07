@@ -9,33 +9,84 @@
 #import "Tournament.h"
 #import "Game.h"
 #import "Team.h"
+#import "Score.h"
 
 @interface Tournament()
-{
-
-}
-
     @property (nonatomic,strong)NSMutableArray * teams;
+    @property (nonatomic,strong)NSMutableArray * winningTeams;
+    @property (nonatomic,strong)NSMutableArray * losingTeams;
     @property (nonatomic,strong)NSMutableArray * players;
-    @property (nonatomic,strong)Game * root; // it will be actually last game
+    @property (nonatomic,strong)Game * root; // modified binary tree
 
     @property NSUInteger numberOfGames;
     @property NSUInteger numberOfLevels;
     @property NSUInteger numberOfTeams;
     @property NSUInteger numberOfFirstRoundGames;
+    @property (nonatomic,strong) NSString *  tournamentId;
+
 
 @end
 
 
 @implementation Tournament
-
+/**
+ *  Default init method
+ *
+ *  @return instance of the tournament class
+ */
 -(instancetype)init{
     if(self = [ super init]){
-      //  _games   = [NSMutableArray new];
         _teams   = [NSMutableArray new];
         _players = [NSMutableArray new];
+        _winningTeams = [NSMutableArray new];
+        _losingTeams = [NSMutableArray new];
+        _tournamentId = [[NSUUID UUID]UUIDString];
+        
     }
     return self;
+}
+
+#pragma mark public methods
+-(NSUInteger)getTotalNumberOfTeams;{
+    return self.numberOfTeams;
+}
+
+
+-(NSUInteger)getNumberOfGames{
+    return self.numberOfGames;
+}
+
+-(NSString *)getTournamentId;{
+    return _tournamentId;
+}
+
+-(id)getTournamentSchedule;{
+    NSMutableArray * games =[NSMutableArray new];
+    if(!self.root)return nil;
+    NSMutableArray * queue= [NSMutableArray new];
+    // NSMutableArray * visited= [NSMutableArray new];
+    
+    [queue addObject:self.root];
+    
+    while(queue.count>0){
+        Game * g= queue.lastObject;
+        [queue removeLastObject];
+        if(g.team1!=NULL &&g.team2!=NULL){
+            [games addObject:g];
+        }
+        
+        NSArray *nodes =   g.getChildrenNodes;
+        for(Game * child in nodes){
+            //add to queue
+            [queue insertObject:child atIndex:0];
+        }
+    }
+    
+
+    [games sortUsingDescriptors:@[  [NSSortDescriptor sortDescriptorWithKey:@"number" ascending:YES]]];
+    
+    
+    return games;
 }
 
 
@@ -46,7 +97,7 @@
             [self buildBracketWithTeams:self.teams];
             break;
         case kDoubleElimination:
-
+            
             break;
         case kRoundRobin:
             
@@ -63,6 +114,7 @@
     self.numberOfGames = [self numberOfGamesForTeamsNumber:teams.count andMode:kSingleElimination];
     self.numberOfTeams = teams.count;
     
+   // NSLog(@" %lu",self.numberOfGames );
     for (int i=0; i<self.numberOfGames; i++) {
         [self addGameWithId:i];
     }
@@ -206,10 +258,9 @@
             nodesInCurrentLevel = nodesInNextLevel;
             nodesInNextLevel = 0;
             currentLevel++;
-           // NSLog(@"\n");
+
         }
     }
-   // NSLog(@"_________________________________________");
 }
 
 
@@ -239,30 +290,82 @@
     }];
 
     [self buildBracketWithTeams:self.teams];
-    
 }
-
 
 
 /**
- Methods for searching for games
- */
--(void)setScore:(id)team1Score and:(id)team2Score game:(id)game finalScore:(BOOL)final;{
+ Methods for setting score for the game
+*/
+-(void)setScore:(id)score game:(id)game{
     Game * foundGame = [self searchForGame:game];
-    foundGame.team1Score = team1Score;
-    foundGame.team2Score = team2Score;
+    foundGame.score = score;
+    Team * winner = [score getWinner];
     
-    id winner = foundGame.team1Score>foundGame.team2Score?foundGame.team1 : foundGame.team2;
-    
-    //draw graph
-    if([foundGame.parent left] == foundGame){
-        foundGame.team1 =winner;
+    if(winner){
+        //get parent
+        Game * parentGame = foundGame.parent;
+        if(parentGame.left == foundGame){
+            parentGame.team1 =winner;
+        }
+         if(parentGame.right == foundGame){
+            parentGame.team2 =winner;
+        }
     }
-    if([foundGame.parent right] == foundGame){
-        foundGame.team2 =winner;
+    
+    //update team stats
+    [self updateStats];
+}
+
+-(void)updateStats{
+    
+    //for each game
+    //check the score
+    NSMutableDictionary * stats =[NSMutableDictionary new];
+    if(!self.root)return;
+    NSMutableArray * queue= [NSMutableArray new];
+   // NSMutableArray * visited= [NSMutableArray new];
+    
+    [queue addObject:self.root];
+
+    while(queue.count>0){
+     Game * g= queue.lastObject;
+     [queue removeLastObject];
+      
+        if(g.team1){
+        //Resetting stats
+            if(![stats objectForKey:[g.team1 seed]]){
+                [g.team1 resetStats];
+                [stats setObject:g forKey:[g.team1 seed]];
+            }
+            [g.team1 updateStatsWithScore:g.score];
+            
+        }
+        
+        if(g.team2) {
+            if(![stats objectForKey:g.team2]){
+                [g.team2 resetStats];
+                [stats setObject:g forKey:[g.team2 seed]];
+            }
+            [g.team2 updateStatsWithScore:g.score];
+        }
+        
+        NSArray *nodes =   g.getChildrenNodes;
+        for(Game * child in nodes){
+            //add to queue
+            [queue insertObject:child atIndex:0];
+        }
     }
 }
 
+
+
+-(id)getStatsForTeam:(id)team{
+    if([self.teams containsObject:team]){
+        return [team stats];
+    }
+    
+    return NULL;
+}
 
 
 
@@ -348,7 +451,6 @@
         numberOfGamesInFirstRound+=num;
     }
     
-
     return numberOfGamesInFirstRound;
 }
 
@@ -373,7 +475,20 @@
     else{
         return NULL;
     }
-    
 }
+
+/***/
+-(id)getTeamsInOrder;{
+//    self.teams sort
+   // [self.teams sortUsingSelector:@selector(compare:)];
+    ///return self.teams;
+
+    NSSortDescriptor * sort = [NSSortDescriptor sortDescriptorWithKey:@"stats" ascending:NO];
+    [self.teams sortUsingDescriptors:@[sort]];
+    
+    
+    return self.teams;
+}
+
 
 @end

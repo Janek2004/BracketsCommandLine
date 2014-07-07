@@ -10,16 +10,18 @@
 
 @interface Stats : NSObject
 
-@property (nonatomic, assign) NSInteger * numberOfVictories;
-@property (nonatomic, assign) NSInteger * numberOfLosses;
-@property (nonatomic, assign) NSInteger * numberOfPointsWon;
-@property (nonatomic, assign) NSInteger * numberOfPointsLost;
-@property (nonatomic, assign) NSInteger * numberOfPointsDifference;
+@property (nonatomic, assign) NSUInteger  numberOfVictories;
+@property (nonatomic, assign) NSUInteger  numberOfLosses;
+@property (nonatomic, assign) NSUInteger  numberOfPointsWon;
+@property (nonatomic, assign) NSUInteger  numberOfPointsLost;
+@property (nonatomic, assign) NSInteger  numberOfPointsDifference;
+@property (nonatomic, assign) NSInteger  numberOfGames;
 
--(void)addGameResult:(id)game between:(id)team1 and:(id)team2 score:(id)score tournament:(id)tournament;
--(id)getStatsForTournament:(id)tournament;
--(id)getLifetimeStatsForTeam:(id)team;
+-(void)addGameResult:(NSUInteger)points  negativePoints:(NSUInteger)points2 victory:(NSUInteger)victories loss:(NSUInteger)loss;
 
+- (id)getStatsForTournament:(id)tournament;
+- (id)getLifetimeStatsForTeam:(id)team;
+- (void)reset;
 
 
 @end

@@ -23,25 +23,30 @@ typedef enum {
 @property (nonatomic, strong) CLLocation * location;
 @property (nonatomic, readonly) TournamentMode tournamentMode;
 
+
 //initializer
 -(instancetype)initWithNumberOfTeams:(int)numberofteams;
-
 
 //teams
 -(void)addTeam:(NSString *)team;
 -(void)removeTeam:(id)team;
-
-
 
 -(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;
 -(void)buildBracketFor:(TournamentMode)mode;
 -(void)displayBracket;
 -(void)setTournamentMode:(TournamentMode)tournamentMode;
 -(id)searchForGame:(id)game;
+-(void)setScore:(id)score game:(id)game;
 
--(void)setScore:(id)team1Score and:(id)team2Score game:(id)game finalScore:(BOOL)final;
+//Public Methods
+-(NSUInteger)getTotalNumberOfTeams;
+-(NSUInteger)getNumberOfGames;
+-(NSString *)getTournamentId;
 
--(NSUInteger)maxNumberOfGamesInLevelForTeams:(int)numberOfTeams;
+-(void)updateStats;
+-(id)getStatsForTeam:(id)team;
+-(id)getTeamsInOrder;
+-(id)getTournamentSchedule;
 
 
 

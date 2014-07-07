@@ -16,6 +16,9 @@
 		822DC47B19569B720001203D /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 822DC47A19569B720001203D /* Game.m */; };
 		827F6DBE19651639003C8EFD /* Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DBD19651639003C8EFD /* Stats.m */; };
 		827F6DC11966F85E003C8EFD /* Score.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC01966F85E003C8EFD /* Score.m */; };
+		827F6DC4196A9FBD003C8EFD /* SingleElimination.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC3196A9FBD003C8EFD /* SingleElimination.m */; };
+		827F6DC7196A9FD7003C8EFD /* DoubleElimination.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC6196A9FD7003C8EFD /* DoubleElimination.m */; };
+		827F6DCA196A9FF4003C8EFD /* RoundRobin.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC9196A9FF4003C8EFD /* RoundRobin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -49,6 +52,12 @@
 		827F6DBD19651639003C8EFD /* Stats.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Stats.m; sourceTree = "<group>"; };
 		827F6DBF1966F85E003C8EFD /* Score.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Score.h; sourceTree = "<group>"; };
 		827F6DC01966F85E003C8EFD /* Score.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Score.m; sourceTree = "<group>"; };
+		827F6DC2196A9FBD003C8EFD /* SingleElimination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleElimination.h; sourceTree = "<group>"; };
+		827F6DC3196A9FBD003C8EFD /* SingleElimination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleElimination.m; sourceTree = "<group>"; };
+		827F6DC5196A9FD7003C8EFD /* DoubleElimination.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoubleElimination.h; sourceTree = "<group>"; };
+		827F6DC6196A9FD7003C8EFD /* DoubleElimination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoubleElimination.m; sourceTree = "<group>"; };
+		827F6DC8196A9FF4003C8EFD /* RoundRobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundRobin.h; sourceTree = "<group>"; };
+		827F6DC9196A9FF4003C8EFD /* RoundRobin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundRobin.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +103,23 @@
 				822DC462195684DF0001203D /* main.m */,
 				822DC466195684DF0001203D /* BracketsCommandLineOS.1 */,
 				822DC464195684DF0001203D /* Supporting Files */,
-				822DC4761956862E0001203D /* Tournament.h */,
-				822DC4771956862E0001203D /* Tournament.m */,
+				827F6DCC196AA011003C8EFD /* Tournament Classes */,
+				827F6DCB196AA003003C8EFD /* Model */,
+			);
+			path = BracketsCommandLineOS;
+			sourceTree = "<group>";
+		};
+		822DC464195684DF0001203D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				822DC465195684DF0001203D /* BracketsCommandLineOS-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		827F6DCB196AA003003C8EFD /* Model */ = {
+			isa = PBXGroup;
+			children = (
 				822DC47919569B720001203D /* Game.h */,
 				822DC47A19569B720001203D /* Game.m */,
 				827F6DBF1966F85E003C8EFD /* Score.h */,
@@ -107,15 +131,22 @@
 				827F6DBC19651639003C8EFD /* Stats.h */,
 				827F6DBD19651639003C8EFD /* Stats.m */,
 			);
-			path = BracketsCommandLineOS;
+			name = Model;
 			sourceTree = "<group>";
 		};
-		822DC464195684DF0001203D /* Supporting Files */ = {
+		827F6DCC196AA011003C8EFD /* Tournament Classes */ = {
 			isa = PBXGroup;
 			children = (
-				822DC465195684DF0001203D /* BracketsCommandLineOS-Prefix.pch */,
+				822DC4761956862E0001203D /* Tournament.h */,
+				822DC4771956862E0001203D /* Tournament.m */,
+				827F6DC2196A9FBD003C8EFD /* SingleElimination.h */,
+				827F6DC3196A9FBD003C8EFD /* SingleElimination.m */,
+				827F6DC5196A9FD7003C8EFD /* DoubleElimination.h */,
+				827F6DC6196A9FD7003C8EFD /* DoubleElimination.m */,
+				827F6DC8196A9FF4003C8EFD /* RoundRobin.h */,
+				827F6DC9196A9FF4003C8EFD /* RoundRobin.m */,
 			);
-			name = "Supporting Files";
+			name = "Tournament Classes";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,10 +201,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				822DC4781956862E0001203D /* Tournament.m in Sources */,
+				827F6DC7196A9FD7003C8EFD /* DoubleElimination.m in Sources */,
+				827F6DC4196A9FBD003C8EFD /* SingleElimination.m in Sources */,
 				822DC475195685C40001203D /* Team.m in Sources */,
 				822DC47B19569B720001203D /* Game.m in Sources */,
 				827F6DBE19651639003C8EFD /* Stats.m in Sources */,
 				822DC472195685540001203D /* Player.m in Sources */,
+				827F6DCA196A9FF4003C8EFD /* RoundRobin.m in Sources */,
 				827F6DC11966F85E003C8EFD /* Score.m in Sources */,
 				822DC463195684DF0001203D /* main.m in Sources */,
 			);

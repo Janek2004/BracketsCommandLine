@@ -9,14 +9,22 @@
 #import <Foundation/Foundation.h>
 
 @interface Team : NSObject
+
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSNumber * seed;
 @property (nonatomic, assign) BOOL active;
-//stats historic stats
+@property (nonatomic,strong, readonly)id stats;
 
+//historic stats
 
 //players
 -(void)addPlayer:(id)player;
 -(void)removePlayer:(id)player;
+-(void)updateStatsWithScore:(id)score;
+
+
+-(void)resetStats;
+
+
 
 @end
