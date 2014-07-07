@@ -19,6 +19,7 @@
 		827F6DC4196A9FBD003C8EFD /* SingleElimination.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC3196A9FBD003C8EFD /* SingleElimination.m */; };
 		827F6DC7196A9FD7003C8EFD /* DoubleElimination.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC6196A9FD7003C8EFD /* DoubleElimination.m */; };
 		827F6DCA196A9FF4003C8EFD /* RoundRobin.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DC9196A9FF4003C8EFD /* RoundRobin.m */; };
+		827F6DD0196AAE86003C8EFD /* TournamentUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 827F6DCF196AAE86003C8EFD /* TournamentUtilities.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,6 +59,9 @@
 		827F6DC6196A9FD7003C8EFD /* DoubleElimination.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoubleElimination.m; sourceTree = "<group>"; };
 		827F6DC8196A9FF4003C8EFD /* RoundRobin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundRobin.h; sourceTree = "<group>"; };
 		827F6DC9196A9FF4003C8EFD /* RoundRobin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundRobin.m; sourceTree = "<group>"; };
+		827F6DCD196AA967003C8EFD /* TournamentProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TournamentProtocol.h; sourceTree = "<group>"; };
+		827F6DCE196AAE86003C8EFD /* TournamentUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TournamentUtilities.h; sourceTree = "<group>"; };
+		827F6DCF196AAE86003C8EFD /* TournamentUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TournamentUtilities.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,8 +143,11 @@
 			children = (
 				822DC4761956862E0001203D /* Tournament.h */,
 				822DC4771956862E0001203D /* Tournament.m */,
+				827F6DCD196AA967003C8EFD /* TournamentProtocol.h */,
 				827F6DC2196A9FBD003C8EFD /* SingleElimination.h */,
 				827F6DC3196A9FBD003C8EFD /* SingleElimination.m */,
+				827F6DCE196AAE86003C8EFD /* TournamentUtilities.h */,
+				827F6DCF196AAE86003C8EFD /* TournamentUtilities.m */,
 				827F6DC5196A9FD7003C8EFD /* DoubleElimination.h */,
 				827F6DC6196A9FD7003C8EFD /* DoubleElimination.m */,
 				827F6DC8196A9FF4003C8EFD /* RoundRobin.h */,
@@ -201,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				822DC4781956862E0001203D /* Tournament.m in Sources */,
+				827F6DD0196AAE86003C8EFD /* TournamentUtilities.m in Sources */,
 				827F6DC7196A9FD7003C8EFD /* DoubleElimination.m in Sources */,
 				827F6DC4196A9FBD003C8EFD /* SingleElimination.m in Sources */,
 				822DC475195685C40001203D /* Team.m in Sources */,

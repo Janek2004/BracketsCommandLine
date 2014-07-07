@@ -31,9 +31,11 @@ typedef enum {
 -(void)addTeam:(NSString *)team;
 -(void)removeTeam:(id)team;
 
--(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;
+//-(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;
+//-(void)displayBracket;
+
 -(void)buildBracketFor:(TournamentMode)mode;
--(void)displayBracket;
+
 -(void)setTournamentMode:(TournamentMode)tournamentMode;
 -(id)searchForGame:(id)game;
 -(void)setScore:(id)score game:(id)game;
@@ -43,7 +45,7 @@ typedef enum {
 -(NSUInteger)getNumberOfGames;
 -(NSString *)getTournamentId;
 
--(void)updateStats;
+//-(void)updateStats;
 -(id)getStatsForTeam:(id)team;
 -(id)getTeamsInOrder;
 -(id)getTournamentSchedule;

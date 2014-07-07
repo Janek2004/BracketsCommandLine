@@ -7,14 +7,21 @@
 //
 
 /*
-    Tournament 
-        Round-Robin
-        Single-Elimination
-        Double-Elimination
-    
-        Common elements
+Tournament
+Mode:
+ Round-Robin
+ Single-Elimination
+ Double-Elimination
+
+ Adding Teams/Players 
+ Specify Number of Groups 
+ Specify Number of stages (round robin + single/double elimination)
+ 
+ 
+    Common elements
         Game Schedule
         Teams in order
+ 
  
  
  */
