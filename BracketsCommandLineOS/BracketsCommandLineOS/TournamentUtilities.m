@@ -41,4 +41,14 @@
 }
 
 
+-(id)getTeamsInOrder:(id)teams{
+    
+    NSSortDescriptor * sort = [NSSortDescriptor sortDescriptorWithKey:@"stats" ascending:NO];
+    [teams sortUsingDescriptors:@[sort]];
+    
+    return teams;
+}
+
+
+
 @end

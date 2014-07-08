@@ -10,4 +10,6 @@
 
 @interface TournamentUtilities : NSObject
 -(NSArray *) sortArray:(NSMutableArray *) array andStart: (NSUInteger) start end: (NSUInteger) end;
+-(id)getTeamsInOrder:(id)teams;
+
 @end

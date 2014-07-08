@@ -12,40 +12,39 @@
 #import "Score.h"
 
 @interface SingleElimination()
-@property (nonatomic,strong)Game * root; // modified binary tree
-@property NSUInteger numberOfGames;
-@property NSUInteger numberOfLevels;
-@property NSUInteger numberOfTeams;
-@property NSUInteger numberOfFirstRoundGames;
-@property (nonatomic,strong)NSMutableArray * teams;
-@property (nonatomic,strong) TournamentUtilities * utilities;
-
+ @property (nonatomic,strong)  Game * root; // modified binary tree
+ @property (nonatomic,assign)  NSUInteger numberOfFirstRoundGames;
+ @property (nonatomic,strong)  NSMutableArray * teams;
+ @property (nonatomic,strong)  TournamentUtilities * utilities;
 @end
-
-
 
 @implementation SingleElimination
 
 -(instancetype)init{
     if(self = [super init]){
          self.utilities = [TournamentUtilities new];
+         self.teams = [NSMutableArray new];
     }
     return self;
 }
 
+-(void)setTournamentTeams:(id)teams;{
+    self.teams= teams;
+    [self buildBracketWithTeams:self.teams];
+}
+
+
 -(void)buildBracketWithTeams:(NSArray *)teams
 {
     self.root = NULL;
-    self.numberOfGames = [self numberOfGamesForTeamsNumber:teams.count];
-    self.numberOfTeams = teams.count;
-   
+    _numberOfGames = [self numberOfGamesForTeamsNumber:teams.count];
+    _numberOfTeams = teams.count;
     
     for (int i=0; i<self.numberOfGames; i++) {
         [self addGameWithId:i];
     }
     
     [self displayBracket];
-    
 }
 
 
@@ -315,6 +314,7 @@
     
     //update team stats
     [self updateStats];
+    [self.utilities getTeamsInOrder:self.teams];
 }
 
 -(id)searchForGame:(id)game;{
@@ -338,6 +338,9 @@
     }
 }
 
+-(id)getTeamsInOrder{
+    return self.teams;
+}
 
 
 

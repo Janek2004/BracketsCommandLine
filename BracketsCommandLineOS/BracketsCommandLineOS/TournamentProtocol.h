@@ -9,13 +9,15 @@
 #import <Foundation/Foundation.h>
 
 @protocol TournamentProtocol <NSObject>
+@property (readonly) NSUInteger numberOfTeams;
+@property (readonly) NSUInteger numberOfGames;
+@property (readonly) NSUInteger numberOfLevels;
+
 -(id)getTeamsInOrder;
 -(id)getTournamentSchedule;
 -(void)buildBracketWithTeams:(NSArray *)teams;
-/**
- Methods for setting score for the game
- */
 -(void)setScore:(id)score game:(id)game;
+-(void)setTournamentTeams:(id)teams;
 -(id)searchForGame:(id)game;
 
 @end

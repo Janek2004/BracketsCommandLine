@@ -7,7 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TournamentProtocol.h"
+@interface RoundRobin : NSObject<TournamentProtocol>
+@property (readonly) NSUInteger numberOfTeams;
+@property (readonly) NSUInteger numberOfGames;
+@property (readonly) NSUInteger numberOfLevels;
 
-@interface RoundRobin : NSObject
+
+
+-(id)getTeamsInOrder;
+-(id)getTournamentSchedule;
+-(void)buildBracketWithTeams:(NSArray *)teams;
+-(void)setScore:(id)score game:(id)game;
+-(id)searchForGame:(id)game;
+
 
 @end

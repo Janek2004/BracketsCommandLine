@@ -12,16 +12,19 @@
 #import "Score.h"
 #import "TournamentProtocol.h"
 #import "TournamentUtilities.h"
+#import "SingleElimination.h"
 
 @interface Tournament()
     @property (nonatomic,strong)NSMutableArray * teams;
     @property (nonatomic,strong)NSMutableArray * winningTeams;
     @property (nonatomic,strong)NSMutableArray * losingTeams;
     @property (nonatomic,strong)NSMutableArray * players;
-    @property NSUInteger numberOfGames;
-    @property NSUInteger numberOfLevels;
-    @property NSUInteger numberOfTeams;
-    @property NSUInteger numberOfFirstRoundGames;
+    @property (nonatomic,strong)NSMutableArray * stages;
+
+   // @property NSUInteger numberOfGames;
+   // @property NSUInteger numberOfLevels;
+   // @property NSUInteger numberOfTeams;
+   // @property NSUInteger numberOfFirstRoundGames;
     @property (nonatomic,strong) NSString *  tournamentId;
     @property (nonatomic,strong) id<TournamentProtocol> tournament;
     
@@ -41,6 +44,7 @@
         _players = [NSMutableArray new];
         _winningTeams = [NSMutableArray new];
         _losingTeams = [NSMutableArray new];
+        _stages = [NSMutableArray new];
         _tournamentId = [[NSUUID UUID]UUIDString];
         
     }
@@ -49,12 +53,12 @@
 
 #pragma mark public methods
 -(NSUInteger)getTotalNumberOfTeams;{
-    return self.numberOfTeams;
+    return self.tournament.numberOfTeams;
 }
 
 
 -(NSUInteger)getNumberOfGames{
-    return self.numberOfGames;
+    return self.tournament.numberOfGames;
 }
 
 -(NSString *)getTournamentId;{
@@ -66,12 +70,14 @@
     
 }
 
-
--(void)buildBracketFor:(TournamentMode)mode;{
-    
+-(void)setFormat:(TournamentMode)mode;{
+    self.tournamentMode = mode;
     switch (mode) {
         case kSingleElimination:
-            [self.tournament buildBracketWithTeams:self.teams];
+            
+            self.tournament = [SingleElimination new];
+            [(SingleElimination *) self.tournament setTournamentTeams: self.teams];
+
             break;
         case kDoubleElimination:
             
@@ -83,7 +89,24 @@
         default:
             break;
     }
+
 }
+
+
+#pragma mark
+-(id)getStage;{
+    
+    return nil;
+}
+-(void)addStageWithMode:(TournamentMode)mode;
+{
+        
+}
+-(void)removeStage:(id) stage;
+{
+    
+}
+
 
 /** Tournament Mode */
 -(void)setTournamentMode:(TournamentMode)tournamentMode{
@@ -157,13 +180,6 @@
     return [self.tournament searchForGame:(id)game];
 }
 
--(id)getTeamsInOrder;{
-
-    NSSortDescriptor * sort = [NSSortDescriptor sortDescriptorWithKey:@"stats" ascending:NO];
-    [self.teams sortUsingDescriptors:@[sort]];
-    
-    return self.teams;
-}
 
 
 @end

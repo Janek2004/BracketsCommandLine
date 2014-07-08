@@ -12,7 +12,8 @@
 typedef enum {
     kRoundRobin,
     kSingleElimination,
-    kDoubleElimination
+    kDoubleElimination,
+    kRoundRobinAndTournament
 }TournamentMode;
 
 
@@ -34,9 +35,8 @@ typedef enum {
 //-(NSUInteger)numberOfGamesForTeamsNumber:(NSUInteger)teamsNumber andMode:(TournamentMode)mode;
 //-(void)displayBracket;
 
--(void)buildBracketFor:(TournamentMode)mode;
 
--(void)setTournamentMode:(TournamentMode)tournamentMode;
+//-(void)setTournamentMode:(TournamentMode)tournamentMode;
 -(id)searchForGame:(id)game;
 -(void)setScore:(id)score game:(id)game;
 
@@ -47,10 +47,14 @@ typedef enum {
 
 //-(void)updateStats;
 -(id)getStatsForTeam:(id)team;
--(id)getTeamsInOrder;
 -(id)getTournamentSchedule;
 
+//stages
+-(id)getStage;
+-(void)addStageWithMode:(TournamentMode)mode;
+-(void)removeStage:(id) stage;
 
+-(void)setFormat:(TournamentMode)mode;
 
 
 @end

@@ -17,11 +17,23 @@ Mode:
  Specify Number of Groups 
  Specify Number of stages (round robin + single/double elimination)
  
- 
     Common elements
         Game Schedule
         Teams in order
  
+    //Add
+    Stage 1:
+        Round-Robin 
+        Pick Number of rounds
+ 
+ or
+        Single/Double Elimination
+ 
+ 
+    Stage 2:
+        Tournament
+        Pick single/double
+ or
  
  
  */
@@ -48,7 +60,16 @@ int main(int argc, const char * argv[])
         [t addTeam:@"Jack/Michelle"];
         [t addTeam:@"Ian/Patchi"];
         [t addTeam:@"Mallory/Zack"];
-        //[t addTeam:@"Whitney/Adrian "];
+
+        
+        [t setFormat:kSingleElimination];
+        
+        //set stage 1
+          //types: round/robin single tournament double tournament
+          //
+        
+        //set stage 2
+        
         
         // test for number of teams
         assert([t getTotalNumberOfTeams] == 7 );
@@ -118,7 +139,7 @@ int main(int argc, const char * argv[])
         
          NSLog(@"Stats of the team %@ %@", [game2.team1 name], [game2.team1 stats]);
         //get teams
-         NSLog(@"Teams in order: %@ ",[t getTeamsInOrder]);
+         //NSLog(@"Teams in order: %@ ",[t getTeamsInOrder]);
     
          NSLog(@"Get Schedule: %@", [t getTournamentSchedule]);
         
