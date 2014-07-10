@@ -8,6 +8,8 @@
 
 #import "RoundRobin.h"
 #import "TournamentUtilities.h"
+#import "Game.h"
+
 @interface RoundRobin()
 @property (nonatomic, strong) TournamentUtilities* utilities;
 @property (nonatomic, strong) NSMutableArray * teams;
@@ -25,8 +27,10 @@
 
 
 -(NSUInteger) numberOfGames{
+   
     
-    return 0;
+    
+    return  (self.teams.count/2 ) * (self.teams.count -1);
 }
 
 /**
@@ -63,36 +67,77 @@
  *  @param teams list of teams
  */
 -(void)buildBracketWithTeams:(NSArray *)teams;{
-  
-    NSUInteger half = self.teams.count/2;
-    if(self.teams.count %2>0){
+    self.teams = [teams mutableCopy];
+    
+    NSMutableArray * mutableTeams = [teams mutableCopy];
+    NSUInteger half = teams.count/2;
+    NSLog(@"%d",(int)teams.count%2);
+
+    
+    if(teams.count%2!=0){
         half++;
-       // [self.teams addObject:[Team new]];
+        [mutableTeams addObject:[NSNull null]];
         
     }
-  __block  NSUInteger lastElementIndex = self.teams.count-1;
-  __block  NSUInteger pivotIndex = 0;
     
-    [teams enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        //choose pivot
-        pivotIndex =0;
+    NSMutableArray * narray =[NSMutableArray new];
+    __block NSUInteger back = mutableTeams.count-1;
+    
+    [mutableTeams enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if(idx<half){
+            [narray addObject:mutableTeams[idx]];
+        }
+        else{
+            [narray addObject:mutableTeams[back]];
+            back--;
+        }
+    }];
+
+    NSMutableArray * finalArray = [NSMutableArray new];
+    
+    for(int i=0; i<narray.count-1;i++){
+       //  NSUInteger pivotIndex =0;
+         NSUInteger lastElementIndex = narray.count-1;
         //round1
-        while(pivotIndex<half){
-            id team  = [teams objectAtIndex:pivotIndex];
-            id team2 = [teams objectAtIndex:lastElementIndex];
-             pivotIndex++;
-             lastElementIndex--;
+        //NSMutableArray * array = [NSMutableArray new];
+        id temp = nil;
+        
+        while(lastElementIndex>0){
+            if(!temp){
+                temp = [narray objectAtIndex:lastElementIndex-1];
+                [narray replaceObjectAtIndex:lastElementIndex-1 withObject:[narray objectAtIndex:lastElementIndex]];
+                lastElementIndex--;
+            }
             
+            else{
+                id temptemp = [narray objectAtIndex:lastElementIndex-1];
+                [narray replaceObjectAtIndex:lastElementIndex-1 withObject:temp];
+                temp = temptemp;
+                lastElementIndex--;
+            }
+        }
+        NSLog(@"NARRAY %@",narray);
+        
+        //get teams from array
+        NSLog(@"___________________________________________________");
+        for(int i=0;i<half; i++){
+            id team1 = [narray objectAtIndex:i];
+            id team2 = [narray objectAtIndex:i+half];
+            
+            Game *g = [Game new];
+            g.team1 = team1;
+            g.team2 = team2;
+            [finalArray addObject:g];
         }
         
+        NSLog(@"%@",finalArray);
         
-        //move array
-        
-        
-    }];
+    }
     
-    
+
 }
+
+
 /**
  *  Adding score to the game
  *
