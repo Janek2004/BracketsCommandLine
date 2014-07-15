@@ -47,64 +47,110 @@ Mode:
 #import "Team.h"
 #import "RoundRobin.h"
 
-void shiftArrayRight(NSMutableArray *teams, NSUInteger shift) {
-    //get half
-    //add additional team
+void shiftArrayRight(NSMutableArray *teams) {
     
     NSUInteger half = teams.count/2;
-    NSLog(@"%d",(int)teams.count%2);
-    
     if(teams.count%2!=0){
         half++;
         [teams addObject:[NSNull null]];
     }
     int start =1;
-    id temp;
+    id temp=[NSNull null];
    
     while (start<half) {
-        temp =teams[start + 1];
-        teams[start + 1] = teams[start];
+        id temp2 = teams[start];
+        teams[start] =temp;
+        temp =temp2;
+    
+        start++;
     }
     
-    while (start<teams.count) {
-        temp =teams[start + 1];
-        teams[start + 1] = teams[start];
+      int end = (int)teams.count -1;
+    while (end>=half) {
+        id temp2 = teams[end];
+        teams[end] = temp;
+        temp = temp2;
+        end--;
     }
+    teams[1]=temp;
     
+   // NSLog(@"Teams %@",teams);
     
-    
-    
-//    for (NSUInteger i = shift; i > 0; i--) {
-//    	NSObject *obj = [mutableArray lastObject];
-//    	[mutableArray insertObject:obj atIndex:0];
-//    	[mutableArray removeLastObject];
-//    }
 }
 
 
 void testRoundRobin(){
-    NSMutableArray * a =[ @[@1,@2,@3,@4,@5] mutableCopy];
-    shiftArrayRight(a, 0);
+   // NSMutableArray * a =[ @[@1,@2,@3,@4,@5] mutableCopy];
+    //123
+    //45N
+    //142
+    //5N3
     
-//    RoundRobin * r = [RoundRobin new];
-//    
-//  
-//    
-//    Team * team =[Team new];
-//    team.name =@"Janek/Taylor";
-//    Team * team2 =[Team new];
-//    team2.name =@"Keith/Megan";
-//    Team * team3 =[Team new];
-//    team3.name =@"Charlie/Chelsea";
-//    Team * team4 =[Team new];
-//    team4.name =@"Carl/Jane";
-//    
-//    NSArray * teams =  @[team,team2,team3,team4];
-//   
-//    
-//    // [r buildBracketWithTeams:teams];
-//    
-//  NSLog(@"Number of games: %lu",r.numberOfGames);
+   // shiftArrayRight(a);
+    
+    RoundRobin * r = [RoundRobin new];
+   assert([r numberOfGamesForTeams:2]==1);
+   assert([r numberOfGamesForTeams:3]==2);
+   assert([r numberOfGamesForTeams:4]==6);
+    
+
+    Team * team =[Team new];
+    team.name =@"Janek/Taylor";
+    Team * team2 =[Team new];
+    team2.name =@"Keith/Megan";
+    Team * team3 =[Team new];
+    team3.name =@"Charlie/Chelsea";
+    Team * team4 =[Team new];
+    team4.name =@"Carl/Jane";
+    
+    NSArray * teams =  @[team,team2,team3,team4];
+
+    [r buildBracketWithTeams:teams];
+
+    Game * g1 = [Game new];
+    g1.number =@1;
+    
+    Game * g2 = [Game new];
+    g2.number =@2;
+    
+    Game * g3 = [Game new];
+    g3.number =@3;
+    
+    Game * game = [r searchForGame: g1];
+    Game * game2 = [r searchForGame: g2];
+    Game * game3 = [r searchForGame: g3];
+
+    
+    Score * s = [Score new];
+    
+    [s setScore:@21 andScore:@13 betweenTeam:game.team1 andTeam2:game.team2 final:YES];
+    [s setScore:@15 andScore:@21 betweenTeam:game.team1 andTeam2:game.team2 final:NO];
+    
+    [r setScore:s game:game];
+    
+    // [game setScore:s];
+    
+    assert([s getPointsForTeam:game.team1 won:YES] == 36);
+    assert([s getPointsForTeam:game.team1 won:NO] == 34);
+    assert([s getSetsForTeam:game.team1 won:YES]==1);
+    assert([s getSetsForTeam:game.team2 won:NO]==1);
+    
+    [s setScore:@21 andScore:@19 betweenTeam:game.team1 andTeam2:game.team2 final:YES];
+    [r setScore:s game:game];
+    
+    assert([s getSetsForTeam:game.team1 won:YES]==2);
+
+    Score * s2 = [Score new];
+    [s2 setScore:@21 andScore:@19 betweenTeam:game3.team1 andTeam2:game3.team2 final:YES];
+    [s2 setScore:@21 andScore:@19 betweenTeam:game3.team1 andTeam2:game3.team2 final:YES];
+    
+    
+    NSLog(@"Stats of the team %@ %@", [game2.team1 name], [game2.team1 stats]);
+    
+    NSLog(@"Teams in order: %@ ",[r getTeamsInOrder]);
+    
+    NSLog(@"Get Schedule: %@", [r getTournamentSchedule]);
+    
     
 }
 
@@ -201,7 +247,7 @@ int main(int argc, const char * argv[])
 {
     @autoreleasepool {
         
-        testRoundRobin();
+       testRoundRobin();
     
         
     }

@@ -14,12 +14,12 @@
 @property (readonly) NSUInteger numberOfLevels;
 
 
-
 -(id)getTeamsInOrder;
 -(id)getTournamentSchedule;
--(void)buildBracketWithTeams:(NSArray *)teams;
+-(id)buildBracketWithTeams:(NSArray *)teams;
 -(void)setScore:(id)score game:(id)game;
 -(id)searchForGame:(id)game;
+-(NSUInteger) numberOfGamesForTeams:(NSUInteger)teamsCount;
 
 
 @end

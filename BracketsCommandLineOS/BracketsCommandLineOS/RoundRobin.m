@@ -9,10 +9,14 @@
 #import "RoundRobin.h"
 #import "TournamentUtilities.h"
 #import "Game.h"
+#import "Team.h"
+#import "Score.h"
 
 @interface RoundRobin()
 @property (nonatomic, strong) TournamentUtilities* utilities;
 @property (nonatomic, strong) NSMutableArray * teams;
+@property (nonatomic, strong) NSMutableArray * games;
+
 @end
 
 @implementation RoundRobin
@@ -21,16 +25,47 @@
     if(self =[super init]){
         _utilities = [TournamentUtilities new];
         _teams = [NSMutableArray new];
+        _games = [NSMutableArray new];
     }
     return self;
 }
 
 
--(NSUInteger) numberOfGames{
+-(void)shiftArrayRight:(NSMutableArray *)teams {
+    
+    NSUInteger half = teams.count/2;
+    if(teams.count%2!=0){
+        half++;
+        [teams addObject:[NSNull null]];
+    }
+    int start =1;
+    id temp=[NSNull null];
+    
+    while (start<half) {
+        id temp2 = teams[start];
+        teams[start] =temp;
+        temp =temp2;
+        
+        start++;
+    }
+    
+    int end = (int)teams.count -1;
+    while (end>=half) {
+        id temp2 = teams[end];
+        teams[end] = temp;
+        temp = temp2;
+        end--;
+    }
+    teams[1]=temp;
+    
+   // NSLog(@"Teams %@",teams);
+    
+}
+
+
+-(NSUInteger) numberOfGamesForTeams:(NSUInteger)teamsCount{
    
-    
-    
-    return  (self.teams.count/2 ) * (self.teams.count -1);
+    return  (teamsCount/2 ) * (teamsCount -1);
 }
 
 /**
@@ -39,17 +74,7 @@
  *  @param teams teams
  */
 -(void)setTournamentTeams:(id)teams;{
-    
-}
-
-/**
- *  Used for showing statistics
- *
- *  @return list of the teams in order
- */
--(id)getTeamsInOrder;{
-  
-    return nil;
+    self.teams = teams;
 }
 
 /**
@@ -59,19 +84,19 @@
  */
 -(id)getTournamentSchedule;{
     
-    return nil;
+    return [self buildBracketWithTeams:self.teams];
 }
 /**
  *  Build tournament bracket
  *
  *  @param teams list of teams
  */
--(void)buildBracketWithTeams:(NSArray *)teams;{
+-(NSArray *)buildBracketWithTeams:(NSArray *)teams;{
     self.teams = [teams mutableCopy];
     
     NSMutableArray * mutableTeams = [teams mutableCopy];
     NSUInteger half = teams.count/2;
-    NSLog(@"%d",(int)teams.count%2);
+   // NSLog(@"%d",(int)teams.count%2);
 
     
     if(teams.count%2!=0){
@@ -96,47 +121,24 @@
     NSMutableArray * finalArray = [NSMutableArray new];
     
     for(int i=0; i<narray.count-1;i++){
-       //  NSUInteger pivotIndex =0;
-         NSUInteger lastElementIndex = narray.count-1;
-        //round1
-        //NSMutableArray * array = [NSMutableArray new];
-        id temp = nil;
+        [self shiftArrayRight:narray];
         
-        while(lastElementIndex>0){
-            if(!temp){
-                temp = [narray objectAtIndex:lastElementIndex-1];
-                [narray replaceObjectAtIndex:lastElementIndex-1 withObject:[narray objectAtIndex:lastElementIndex]];
-                lastElementIndex--;
-            }
-            
-            else{
-                id temptemp = [narray objectAtIndex:lastElementIndex-1];
-                [narray replaceObjectAtIndex:lastElementIndex-1 withObject:temp];
-                temp = temptemp;
-                lastElementIndex--;
-            }
-        }
-        NSLog(@"NARRAY %@",narray);
-        
-        //get teams from array
-        NSLog(@"___________________________________________________");
         for(int i=0;i<half; i++){
             id team1 = [narray objectAtIndex:i];
             id team2 = [narray objectAtIndex:i+half];
             
             Game *g = [Game new];
+            g.number = [NSNumber numberWithInteger:finalArray.count+1];
             g.team1 = team1;
             g.team2 = team2;
             [finalArray addObject:g];
         }
-        
-        NSLog(@"%@",finalArray);
-        
+  
     }
+    self.games = finalArray;
     
-
+    return finalArray;
 }
-
 
 /**
  *  Adding score to the game
@@ -145,12 +147,43 @@
  *  @param game  game
  */
 -(void)setScore:(id)score game:(id)game;{
+    Game * foundGame = [self searchForGame:game];
+    foundGame.score = score;
+    [foundGame.team1 updateStatsWithScore:score];
+    [foundGame.team2 updateStatsWithScore:score];
     
+//  Team * winner = [score getWinner];
+//    if(winner){
+//        //get parent
+//        Game * parentGame = foundGame.parent;
+//        if(parentGame.left == foundGame){
+//            parentGame.team1 =winner;
+//        }
+//        if(parentGame.right == foundGame){
+//            parentGame.team2 =winner;
+//        }
+//    }
+// [self updateStats]; //update team stats//  [self.utilities getTeamsInOrder:self.teams];
+
+    
+
+}
+
+-(id)getTeamsInOrder;{
+    
+   return  [self.utilities getTeamsInOrder:self.teams];
 }
 
 
--(id)searchForGame:(id)game;{
-
+-(id)searchForGame:(Game *)game;{
+    
+//    NSSortDescriptor * sort =
+    NSPredicate * predicate = [NSPredicate predicateWithFormat:@"number == %@", game.number];
+    NSArray * a = [self.games filteredArrayUsingPredicate:predicate];
+    if(a>0){
+        return a[0];
+    }
+    
     return nil;
 }
 
