@@ -73,6 +73,7 @@ void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loser
     NSUInteger losersCount =loserTeamsToDistribute.count;
     NSMutableArray * newLastLevelLoserNodes = [NSMutableArray new];
    
+   [loserTeamsToDistribute sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
     
     for(Game * gl in lastLevelLoserNodes){
         
@@ -179,25 +180,36 @@ void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loser
  
             }
             if(losersLeft >= 4){
-                Game *ng = [Game new];
-                ng.parent = gl;
-                gl.right = ng;
-                ng.team1 =[loserTeamsToDistribute lastObject];
-                [loserTeamsToDistribute removeLastObject];
-                 [newLastLevelLoserNodes addObject:ng];
                 
-                Game *ng1 = [Game new];
-                ng.parent = gl;
-                gl.left = ng1;
+                if(!gl.team1&&!gl.left)
+                {
+                    Game *ng = [Game new];
+                    ng.parent = gl;
+                    ng.team1 =[loserTeamsToDistribute lastObject];
+                    gl.left = ng;
+                   
+                    [loserTeamsToDistribute removeLastObject];
+                    [newLastLevelLoserNodes addObject:ng];
+                    totalNumberOfLosersDistributed++;
+                    ng.parent = gl;
+                    gameCount ++;
+                    ng.gameId = @(gameCount);
                 
-                ng.gameId = @(gameCount);
-                gameCount ++;
-
-                ng1.gameId = @(gameCount);
-                gameCount ++;
-                ng1.team2 =[loserTeamsToDistribute lastObject];
-                [loserTeamsToDistribute removeLastObject];
-                [newLastLevelLoserNodes addObject:ng1];
+                }
+                
+                if(!gl.team2&&!gl.right)
+                {
+                    Game *ng1 = [Game new];
+                    gl.right = ng1;
+                    gameCount ++;
+                    ng1.gameId = @(gameCount);
+                    
+                    ng1.team2 =[loserTeamsToDistribute lastObject];
+                    [loserTeamsToDistribute removeLastObject];
+                    [newLastLevelLoserNodes addObject:ng1];
+                    totalNumberOfLosersDistributed++;
+                    
+                }
             }
         }
         
@@ -226,12 +238,9 @@ Game* buildLoserBracket(){
     [t addTeam:@"Keith/Megan "];
     [t addTeam:@"Charlie/Chelsea"];
     [t addTeam:@"Eric/Meghan"];
-
-    
-    
-//    [t addTeam:@"Jack/Michelle"];
-//    [t addTeam:@"Ian/Patchi"];
-//    [t addTeam:@"Mallory/Zack"];
+    [t addTeam:@"Jack/Michelle"];
+    [t addTeam:@"Ian/Patchi"];
+    [t addTeam:@"Mallory/Zack"];
     
     [t setFormat:kSingleElimination];
 
