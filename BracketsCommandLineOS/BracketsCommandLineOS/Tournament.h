@@ -56,5 +56,8 @@ typedef enum {
 
 -(void)setFormat:(TournamentMode)mode;
 
+-(id)getTournamentTree;
+
+
 
 @end

@@ -12,7 +12,7 @@
 #import "Score.h"
 
 @interface SingleElimination()
- @property (nonatomic,strong)  Game * root; // modified binary tree
+
  @property (nonatomic,assign)  NSUInteger numberOfFirstRoundGames;
  @property (nonatomic,strong)  NSMutableArray * teams;
  @property (nonatomic,strong)  TournamentUtilities * utilities;
@@ -44,7 +44,14 @@
         [self addGameWithId:i];
     }
     
-    [self displayBracket];
+    [self buildBracket];
+}
+
+-(NSUInteger)getNumberOfGamesForLevel{
+    
+    
+    
+    return 0;
 }
 
 
@@ -164,13 +171,15 @@
     }
     
     
-    [games sortUsingDescriptors:@[  [NSSortDescriptor sortDescriptorWithKey:@"number" ascending:YES]]];
+    [games sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"number" ascending:YES]]];
     
     
     return games;
 }
 
--(void)displayBracket;{
+
+
+-(void)buildBracket;{
     if(self.numberOfGames==0){
         NSLog(@"Not enough Games");
         return;
@@ -194,11 +203,12 @@
     NSUInteger maxNumberOfGamesInFirstLevel =  pow(2, maxLevel-1);
     
     NSUInteger difference =  maxNumberOfGamesInFirstLevel - firstLevelGames;
+    
     //the difference will have to be distributed in level maxLevel-1
     [self.utilities sortArray:self.teams andStart:0 end:difference];
     [self.utilities sortArray:self.teams andStart:difference end:self.teams.count];
     
-    // NSLog(@"Sorted Array %@",self.teams);
+   
     //get number of games;
     NSUInteger gn = self.numberOfGames;
     
@@ -213,10 +223,9 @@
         //remove from queue
         [queue removeLastObject];
         nodesInCurrentLevel--;
-        
-        //here we can look for some kind of data
+
+        //Special cases one level from up from the last level
         if(currentLevel == maxLevel-1){
-            // NSLog(@"here we need populate the difference ");
             //if it has both children than we leave it alone.
             //if it has only one children we assign values from array starting from the left to right
             if(game.left == NULL){
@@ -247,6 +256,7 @@
             }
         }
         
+        //tracking current level after processing all nodes from current level
         if(nodesInCurrentLevel == 0){
             nodesInCurrentLevel = nodesInNextLevel;
             nodesInNextLevel = 0;
@@ -255,6 +265,95 @@
         }
     }
 }
+
+-(void)buildDoubleEliminationBracket;{
+    if(self.numberOfGames==0){
+        NSLog(@"Not enough Games");
+        return;
+    }
+    
+    if(!self.root) return;
+    
+    NSMutableArray * queue = [NSMutableArray new];
+    NSMutableArray * _visited = [NSMutableArray new];
+    
+    [queue addObject:self.root];
+    [_visited addObject:self.root];
+    
+    NSUInteger nodesInCurrentLevel = 1;
+    NSUInteger nodesInNextLevel = 0;
+    NSUInteger currentLevel = 1;
+    NSUInteger maxLevel = [self findClosestPower:self.teams.count];
+    
+    NSUInteger firstLevelGames =[self findNumberOfFirstRoundGames:pow(2,  maxLevel) andTeamsNumber:self.teams.count];
+    
+    NSUInteger maxNumberOfGamesInFirstLevel =  pow(2, maxLevel-1);
+    
+    NSUInteger difference =  maxNumberOfGamesInFirstLevel - firstLevelGames;
+    
+    //the difference will have to be distributed in level maxLevel-1
+    [self.utilities sortArray:self.teams andStart:0 end:difference];
+    [self.utilities sortArray:self.teams andStart:difference end:self.teams.count];
+    
+    
+    //get number of games;
+    NSUInteger gn = self.numberOfGames;
+    
+    NSUInteger level1diff = difference;
+    NSUInteger level2diff=  difference;
+    
+    while (queue.count >0) {
+        
+        Game * game =queue.lastObject;
+        game.number = [NSNumber numberWithInteger:gn];
+        gn--;
+        //remove from queue
+        [queue removeLastObject];
+        nodesInCurrentLevel--;
+        
+        //Special cases one level from up from the last level
+        if(currentLevel == maxLevel-1){
+            //if it has both children than we leave it alone.
+            //if it has only one children we assign values from array starting from the left to right
+            if(game.left == NULL){
+                game.team1 = self.teams[level2diff-1];
+                level2diff--;
+            }
+            if(game.right == NULL){
+                game.team2 = self.teams[level2diff-1];
+                level2diff--;
+            }
+        }
+        
+        if(currentLevel == maxLevel){
+            Team * team1 = self.teams[level1diff];
+            Team * team2 = self.teams[++level1diff];
+            game.team1 =team1;
+            game.team2 =team2;
+            
+            level1diff++;
+        }
+        
+        for(Game* child in [game getChildrenNodes]){
+            if(![_visited containsObject:child])
+            {
+                [_visited addObject:child];
+                [queue insertObject:child atIndex:0];
+                nodesInNextLevel++;
+            }
+        }
+        
+        //tracking current level after processing all nodes from current level
+        if(nodesInCurrentLevel == 0){
+            nodesInCurrentLevel = nodesInNextLevel;
+            nodesInNextLevel = 0;
+            currentLevel++;
+            
+        }
+    }
+}
+
+
 
 -(void)updateStats{
     

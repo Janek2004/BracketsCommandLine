@@ -21,10 +21,6 @@
     @property (nonatomic,strong)NSMutableArray * players;
     @property (nonatomic,strong)NSMutableArray * stages;
 
-   // @property NSUInteger numberOfGames;
-   // @property NSUInteger numberOfLevels;
-   // @property NSUInteger numberOfTeams;
-   // @property NSUInteger numberOfFirstRoundGames;
     @property (nonatomic,strong) NSString *  tournamentId;
     @property (nonatomic,strong) id<TournamentProtocol> tournament;
     
@@ -171,7 +167,9 @@
     
     return NULL;
 }
-
+-(id)getTournamentTree;{
+   return  [(SingleElimination *) self.tournament root];
+}
 
 
 #pragma mark utilities

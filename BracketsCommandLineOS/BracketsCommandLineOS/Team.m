@@ -55,6 +55,6 @@
 -(void)addPlayer:(id)player;{}
 -(void)removePlayer:(id)player;{}
 -(NSString *)description{
-    return [NSString stringWithFormat:@" %@ %@",self.seed, self.name];
+    return [NSString stringWithFormat:@" Seed: %@ Name: %@",self.seed, self.name];
 }
 @end

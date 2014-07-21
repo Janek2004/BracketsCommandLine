@@ -8,12 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "TournamentProtocol.h"
+@class Game;
+
 @interface SingleElimination : NSObject <TournamentProtocol>
 
 @property (readonly) NSUInteger numberOfTeams;
 @property (readonly) NSUInteger numberOfGames;
 @property (readonly) NSUInteger numberOfLevels;
-
+@property (nonatomic,strong)  Game * root; // modified binary tree
 
 
 @end
