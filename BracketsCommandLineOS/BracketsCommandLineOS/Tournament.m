@@ -73,7 +73,8 @@
             
             self.tournament = [SingleElimination new];
             [(SingleElimination *) self.tournament setTournamentTeams: self.teams];
-
+           // [self.tournament buildBracketWithTeams:self.teams];
+            
             break;
         case kDoubleElimination:
             

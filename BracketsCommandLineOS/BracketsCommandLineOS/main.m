@@ -120,7 +120,7 @@ void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loser
         // if we have one team left or more  let's say we have only one
         if(losersCount>1){
 
-            NSUInteger losersLeft =  totalNumberOfLosersDistributed - totalNumberOfLosers;
+            NSUInteger losersLeft = totalNumberOfLosers - totalNumberOfLosersDistributed ;
             if(losersLeft == 1){ // that contradicts with if losersCount > 1
              
             }
@@ -133,7 +133,7 @@ void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loser
                     [loserTeamsToDistribute removeLastObject];
                     totalNumberOfLosersDistributed++;
                 }
-                else if(!gl.team2){
+                if(!gl.team2){
                     gl.team2 = [loserTeamsToDistribute lastObject];
                     [loserTeamsToDistribute removeLastObject];
                     totalNumberOfLosersDistributed++;
@@ -243,16 +243,17 @@ Game* buildLoserBracket(){
     NSUInteger nodesInNextLevel = 0;
     NSUInteger nodesInCurrentLevel = 1;
     NSUInteger currentLevel = 0;
-   // NSUInteger totalNumberOfNodes =0;
+
     totalNumberOfLosers = [t getNumberOfGames];
-  
-    // NSUInteger totalNumberOfLosersDistributed = 0;
+
     
     NSMutableArray * currentLevelNodes = [NSMutableArray new];
-    NSMutableArray * loserTeamsToDistribute = [NSMutableArray new];
+    NSMutableArray * currentLoserLevelNodes = [NSMutableArray new];
+    NSMutableArray * nextLevelNodes = [NSMutableArray new];
     
-    NSMutableArray * nextLevelLoserNodes = [NSMutableArray new];
-    [currentLevelNodes addObject: lroot];
+    NSMutableArray * loserTeamsToDistribute = [NSMutableArray new];
+    [currentLevelNodes addObject: rroot];
+    [currentLoserLevelNodes addObject:lroot];
     
     while(queue.count>0){
         Game * g= queue.lastObject;
@@ -271,7 +272,7 @@ Game* buildLoserBracket(){
         for(Game * child in nodes){
             [queue insertObject:child atIndex:0];
             nodesInNextLevel++;
-            [nextLevelLoserNodes addObject:child];
+            [nextLevelNodes addObject:child];
         }
         
         if(nodesInCurrentLevel == 0){
@@ -284,12 +285,15 @@ Game* buildLoserBracket(){
                 [loserTeamsToDistribute addObject:t];
             }
            
-            distributeTeams(currentLevelNodes, loserTeamsToDistribute);
-            [currentLevelNodes addObjectsFromArray:nextLevelLoserNodes];
-            [nextLevelLoserNodes removeAllObjects];
-
+            distributeTeams(currentLoserLevelNodes, loserTeamsToDistribute);
+            [currentLevelNodes removeAllObjects];
+            [currentLevelNodes addObjectsFromArray:nextLevelNodes];
+            [nextLevelNodes removeAllObjects];
+            
             nodesInCurrentLevel = nodesInNextLevel;
            // totalNumberOfNodes = nodesInNextLevel;
+            
+            
             nodesInNextLevel = 0;
             currentLevel++;
 

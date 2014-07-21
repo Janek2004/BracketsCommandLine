@@ -29,7 +29,8 @@
 }
 
 -(void)setTournamentTeams:(id)teams;{
-    self.teams= teams;
+    [self.teams removeAllObjects];
+    [self.teams addObjectsFromArray:teams];
     [self buildBracketWithTeams:self.teams];
 }
 
@@ -37,6 +38,7 @@
 -(void)buildBracketWithTeams:(NSArray *)teams
 {
     self.root = NULL;
+     
     _numberOfGames = [self numberOfGamesForTeamsNumber:teams.count];
     _numberOfTeams = teams.count;
     
