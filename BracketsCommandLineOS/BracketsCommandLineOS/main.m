@@ -207,7 +207,8 @@ void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loser
             break;
         }
     }
-    lastLevelLoserNodes = newLastLevelLoserNodes;
+    [lastLevelLoserNodes removeAllObjects];
+    [lastLevelLoserNodes addObjectsFromArray: newLastLevelLoserNodes];
     
 }
 
@@ -282,12 +283,10 @@ Game* buildLoserBracket(){
                 t.name = [NSString stringWithFormat:@"L%@",gl.number];
                 [loserTeamsToDistribute addObject:t];
             }
-            
-            //[currentLevelNodes removeAllObjects];
+           
+            distributeTeams(currentLevelNodes, loserTeamsToDistribute);
             [currentLevelNodes addObjectsFromArray:nextLevelLoserNodes];
             [nextLevelLoserNodes removeAllObjects];
-
-            distributeTeams(currentLevelNodes, loserTeamsToDistribute);
 
             nodesInCurrentLevel = nodesInNextLevel;
            // totalNumberOfNodes = nodesInNextLevel;
