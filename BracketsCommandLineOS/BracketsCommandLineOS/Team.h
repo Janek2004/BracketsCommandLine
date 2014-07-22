@@ -11,6 +11,7 @@
 @interface Team : NSObject
 
 @property (nonatomic, strong) NSString * name;
+@property (nonatomic, strong) NSString * loserteamId;
 @property (nonatomic, strong) NSNumber * seed;
 @property (nonatomic, assign) BOOL active;
 @property (nonatomic,strong, readonly)id stats;

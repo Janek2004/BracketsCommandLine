@@ -55,6 +55,19 @@
 -(void)addPlayer:(id)player;{}
 -(void)removePlayer:(id)player;{}
 -(NSString *)description{
-    return [NSString stringWithFormat:@" Seed: %@ Name: %@",self.seed, self.name];
+    NSMutableString * s = [NSMutableString new];
+    if(self.seed){
+        [s appendString:[NSString stringWithFormat:@"Seed: %@",self.seed]];
+    }
+    if(self.name){
+        [s appendString:[NSString stringWithFormat:@"Name: %@",self.name]];
+    }
+    
+    if(self.loserteamId){
+        [s appendString:[NSString stringWithFormat:@"LoseId: %@",self.loserteamId]];
+    }
+    
+    return s;
+    
 }
 @end

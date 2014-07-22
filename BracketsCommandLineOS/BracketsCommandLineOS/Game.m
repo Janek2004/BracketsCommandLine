@@ -23,12 +23,10 @@
 }
 
 -(NSString *)description{
-  id l=  [self.left gameId];
-  id r=  [self.right gameId];
+    id l= [self.left number];
+    id r=   [self.right number];
     
     return [NSString stringWithFormat:@" \n Game Id %@ \n Number: %@ \n Children:%@ %@ \n Team 1 %@ Team 2 %@",self.gameId, self.number, l, r,self.team1, self.team2];
-    
-    
 }
 
 @end

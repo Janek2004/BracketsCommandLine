@@ -53,6 +53,11 @@ Mode:
  or
  
  
+ 
+ 
+ 
+ 
+ 
  */
 
 
@@ -68,6 +73,103 @@ NSUInteger totalNumberOfLosersDistributed=0;
 NSUInteger totalNumberOfLosers =0;
 NSUInteger gameCount =0;
 
+
+Game * createDDBracket(NSUInteger nrteams){
+    Game * secondFinalGame = [Game new];
+    Game * finalGame = [Game new];
+    Game * losers = [Game new];
+    Game * winners = [Game new];
+    
+    Team  *t0 = [Team new];
+    secondFinalGame.team2  = t0;
+ 
+    
+    
+    
+    switch (nrteams) {
+        case 3:
+        {
+            secondFinalGame.number = @5;
+            finalGame.number = @4;
+            losers.number= @3;
+            winners.number =@2;
+
+            Game *g = [Game new];
+            g.number = @1;
+            winners.right = g;
+            g.parent = winners;
+            
+            t0.loserteamId = @"L4";
+            
+            Team  *t1 = [Team new];
+            t1.loserteamId = @"L1";
+            Team  *t2 = [Team new];
+            t2.loserteamId = @"L2";
+            losers.team1 = t1;
+            losers.team2 = t2;
+        
+        }
+            break;
+            
+        case 4:
+        {
+            secondFinalGame.number = @7;
+            finalGame.number = @6;
+            losers.number= @5;
+            winners.number =@3;
+            
+            Game *wg = [Game new];
+            wg.number = @1;
+            
+            Game *wg1 = [Game new];
+            wg1.number = @1;
+            
+            winners.right = wg;
+            winners.left = wg1;
+            
+            
+            t0.loserteamId = @"L6";
+            
+            Team  *t3 = [Team new];
+            t3.loserteamId = @"L3";
+            Team  *t2 = [Team new];
+            t2.loserteamId = @"L2";
+            Team  *t1 = [Team new];
+            t2.loserteamId = @"L2";
+   
+            losers.team1 = t3;
+            
+            Game * lg = [Game new];
+            lg.number = @4;
+            lg.team1  = t1;
+            lg.team2  = t2;
+            
+        }
+            break;
+    
+            
+            
+            
+            
+        default:
+            break;
+    }
+  
+    secondFinalGame.left = finalGame;
+    finalGame.parent = secondFinalGame;
+    finalGame.left = winners;
+    finalGame.right =losers;
+    
+    winners.parent = finalGame;
+    losers.parent = finalGame;
+
+    
+    
+    return secondFinalGame;
+
+}
+
+
 BOOL isLeftEmpty(Game *g){
 
     return g.left==NULL && g.team1==NULL;
@@ -78,314 +180,9 @@ BOOL isRightEmpty(Game *g){
     return g.right==NULL && g.team2==NULL;
 }
 
-void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loserTeamsToDistribute){
-
-    NSUInteger losersCount =loserTeamsToDistribute.count;
-    NSMutableArray * newLastLevelLoserNodes = [NSMutableArray new];
-   
-   [loserTeamsToDistribute sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
-    NSUInteger  spotsLeft = 0;
-    for(Game *gl in lastLevelLoserNodes){
-        if(isLeftEmpty(gl)){
-            spotsLeft++;
-        }
-        if(isRightEmpty(gl)){
-            spotsLeft++;
-        }
-    }
-    //So we should decide about either game or a team based on:
-    /*
-     
-     */
-    
-    for(int i=0; i<lastLevelLoserNodes.count;i++){
-        Game * gl = lastLevelLoserNodes[i];
-        if(isLeftEmpty(gl))
-        {
-            //either game or team
-            gl.left = @"";
-            if(losersCount>spotsLeft){
-                Game *ng = [Game new];
-                ng.parent = gl;
-                gl.left = ng;
-                ng.left = loserTeamsToDistribute.lastObject;
-                spotsLeft--;
-            }
-            ///f nt the last number of teams == number to distron
-        }
-            
-        if(isRightEmpty(gl))
-        {
-            //either game or team
-            gl.right = @"";
-            if(losersCount>spotsLeft){
-                Game *ng = [Game new];
-                ng.parent = gl;
-                gl.right = ng;
-                ng.right = loserTeamsToDistribute.lastObject;
-                spotsLeft--;
-            }
-        }
-
-        
-        
-        
-        
-        
-        //Case 1: we have one losing team
-        if(losersCount == 1){
-
-            //adding a teams that has bye
-            if(isLeftEmpty(gl))
-            {
-                gl.team1 = [loserTeamsToDistribute lastObject];
-                [loserTeamsToDistribute removeLastObject];
-                totalNumberOfLosersDistributed++;
-                losersCount --;
-
-            }
-            else if(isRightEmpty(gl)){
-                gl.team2 = [loserTeamsToDistribute lastObject];
-                [loserTeamsToDistribute removeLastObject];
-                totalNumberOfLosersDistributed++;
-                losersCount --;
-            }
-            
-            //Make sure that there are still additional teams to be distributed
-            if(totalNumberOfLosersDistributed == totalNumberOfLosers){
-                //End of the story
-                break;
-            }
-            else{
-                //add a new game
-                Game *ng = [Game new];
-                ng.parent = gl;
-                
-                if(isRightEmpty(gl)){
-                    gl.right = ng;
-                    ng.gameId = @(gameCount);
-                    gameCount ++;
-                }
-                
-                if(isLeftEmpty(gl)){
-                    gl.left = ng;
-                    ng.gameId = @(gameCount);
-                    gameCount ++;
-
-                }
-                
-                [newLastLevelLoserNodes addObject:ng];
-
-           }
-        }
-        
-        //Case 2 multiple teams to distribute
-        //Adding game or just a team?
-        
-        //so it depends
-        // if we have one team left or more  let's say we have only one
-        if(losersCount>1){
-
-            NSUInteger losersLeft = totalNumberOfLosers - totalNumberOfLosersDistributed ;
-            if(losersLeft == 1){
-             
-            }
-            
-            if(losersLeft == 2){
-                //check if it is available
-                if(isLeftEmpty(gl))
-                {
-                    gl.team1 = [loserTeamsToDistribute lastObject];
-                    [loserTeamsToDistribute removeLastObject];
-                    totalNumberOfLosersDistributed++;
-                     losersCount --;
-                }
-                if(isRightEmpty(gl)){
-                    gl.team2 = [loserTeamsToDistribute lastObject];
-                    [loserTeamsToDistribute removeLastObject];
-                    totalNumberOfLosersDistributed++;
-                    losersCount --;
-                }
-
-            }
-            
-            if(losersLeft == 3){
-                //check what is available
-                
-                if(isLeftEmpty(gl)&&isRightEmpty(gl)){
-                    gl.team1 = [loserTeamsToDistribute lastObject];
-                    [loserTeamsToDistribute removeLastObject];
-                    totalNumberOfLosersDistributed++;
-
-                    //create a new game
-                    Game *ng = [Game new];
-                    ng.parent = gl;
-                    gl.right = ng;
-                    ng.gameId = @(gameCount);
-                    gameCount ++;
-                    
-                    [newLastLevelLoserNodes addObject:ng];
-                 }
-                
-                if(!isLeftEmpty(gl)&&isRightEmpty(gl)){
-                {
-                    //Create a new game
-                    Game *ng = [Game new];
-                    ng.parent = gl;
-                    gl.right = ng;
-                    ng.team1 =[loserTeamsToDistribute lastObject];
-                    [loserTeamsToDistribute removeLastObject];
-                     totalNumberOfLosersDistributed++;
-                    
-                    ng.team2 = [loserTeamsToDistribute lastObject];
-                    [loserTeamsToDistribute removeLastObject];
-                    totalNumberOfLosersDistributed++;
-                    losersCount --;
-                    
-                    //create a new game
-                    
-                    ng.gameId = @(gameCount);
-                    gameCount ++;
-                    
-                    [newLastLevelLoserNodes addObject:ng];
-
-                }
-                }
-               
-            }
-            if(losersLeft >= 4){
-                
-                if(isLeftEmpty(gl))
-                {
-                    Game *ng = [Game new];
-                    ng.parent = gl;
-                    ng.team1 =[loserTeamsToDistribute lastObject];
-                    gl.left = ng;
-                    totalNumberOfLosersDistributed++;
-                    
-                    [loserTeamsToDistribute removeLastObject];
-                    [newLastLevelLoserNodes addObject:ng];
-                    
-                    ng.parent = gl;
-                    gameCount ++;
-                    ng.gameId = @(gameCount);
-                
-                }
-                
-                if(isRightEmpty(gl))
-                {
-                    Game *ng1 = [Game new];
-                    gl.right = ng1;
-                    gameCount ++;
-                    ng1.gameId = @(gameCount);
-                    
-                    ng1.team2 =[loserTeamsToDistribute lastObject];
-                    [loserTeamsToDistribute removeLastObject];
-                    [newLastLevelLoserNodes addObject:ng1];
-                    totalNumberOfLosersDistributed++;
-                }
-            }
-        }
-        
-        
-        if(totalNumberOfLosersDistributed == totalNumberOfLosers){
-            //End of the story
-            break;
-        }
-    }
-    [lastLevelLoserNodes removeAllObjects];
-    [lastLevelLoserNodes addObjectsFromArray: newLastLevelLoserNodes];
-    
-}
 
 
-Game* buildLoserBracket(){
-    Game * lroot = [Game new];// final loser's game
-    lroot.gameId = @(gameCount);
-    gameCount++;
-    
-    // I think I should loop through the winners bracket...:
-    //
-    Tournament * t = [[Tournament alloc]init];
-    
-    [t addTeam:@"Janek / Taylor"];
-    [t addTeam:@"Keith/Megan "];
-    [t addTeam:@"Charlie/Chelsea"];
-    [t addTeam:@"Eric/Meghan"];
-    [t addTeam:@"Jack/Michelle"];
-    [t addTeam:@"Ian/Patchi"];
-    [t addTeam:@"Mallory/Zack"];
-    
-    [t setFormat:kSingleElimination];
 
-    Game * rroot = [t getTournamentTree];
-    NSMutableArray * games =[NSMutableArray new];
-    NSMutableArray * queue= [NSMutableArray new];
-    [queue addObject:rroot];
-    
-    NSUInteger nodesInNextLevel = 0;
-    NSUInteger nodesInCurrentLevel = 1;
-    NSUInteger currentLevel = 0;
-
-    totalNumberOfLosers = [t getNumberOfGames];
-
-    
-    NSMutableArray * currentLevelNodes = [NSMutableArray new];
-    NSMutableArray * currentLoserLevelNodes = [NSMutableArray new];
-    NSMutableArray * nextLevelNodes = [NSMutableArray new];
-    
-    NSMutableArray * loserTeamsToDistribute = [NSMutableArray new];
-    [currentLevelNodes addObject: rroot];
-    [currentLoserLevelNodes addObject:lroot];
-    
-    while(queue.count>0){
-        Game * g= queue.lastObject;
-//        NSLog(@"Game g %@",g);
-        [queue removeLastObject];
-        nodesInCurrentLevel--;
-        
-        //loop through all games at this level probably it can be called after the level is traversed
-  
-        if(g.team1!=NULL &&g.team2!=NULL){
-            [games addObject:g];
-        }
-
-        NSArray *nodes =   g.getChildrenNodes;
-
-        for(Game * child in nodes){
-            [queue insertObject:child atIndex:0];
-            nodesInNextLevel++;
-            [nextLevelNodes addObject:child];
-        }
-        
-        if(nodesInCurrentLevel == 0){
-            //here we know all the nodes on current level so we should determine what to do with the losers
-
-            for (Game * gl in currentLevelNodes){
-                //create a list of losers to redistribute
-                Team * t = [Team new];
-                t.name = [NSString stringWithFormat:@"L%@",gl.number];
-                [loserTeamsToDistribute addObject:t];
-            }
-           
-            distributeTeams(currentLoserLevelNodes, loserTeamsToDistribute);
-            [currentLevelNodes removeAllObjects];
-            [currentLevelNodes addObjectsFromArray:nextLevelNodes];
-            [nextLevelNodes removeAllObjects];
-            
-            nodesInCurrentLevel = nodesInNextLevel;
-           // totalNumberOfNodes = nodesInNextLevel;
-            
-            
-            nodesInNextLevel = 0;
-            currentLevel++;
-
-            
-        }
-    }
-    
-    return lroot;
-}
 
 
 void displayBracket(Game * root){
@@ -440,9 +237,12 @@ int main(int argc, const char * argv[])
         
        //testRoundRobin();
         NSLog(@"Start");
-        Game * g= buildLoserBracket();
-        displayBracket(g);
+     //   Game * g= buildLoserBracket();
+     //   displayBracket(g);
         assert(totalNumberOfLosersDistributed ==totalNumberOfLosers);
+        Game * g = createDDBracket(3);
+        displayBracket(g);
+//       NSLog(@"%@",   createDDBracket(3));
         
         
     }
@@ -644,5 +444,429 @@ void testMainTournament(){
     
 }
 
+void distributeTeams(NSMutableArray * lastLevelLoserNodes, NSMutableArray* loserTeamsToDistribute){
+    
+    NSUInteger losersCount =loserTeamsToDistribute.count;
+    NSMutableArray * newLastLevelLoserNodes = [NSMutableArray new];
+    
+    [loserTeamsToDistribute sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]]];
+    NSUInteger  spotsLeft = 0;
+    for(Game *gl in lastLevelLoserNodes){
+        if(isLeftEmpty(gl)){
+            spotsLeft++;
+        }
+        if(isRightEmpty(gl)){
+            spotsLeft++;
+        }
+    }
+    //So we should decide about either game or a team based on:
+    /*
+     
+     */
+    
+    for(int i=0; i<lastLevelLoserNodes.count;i++){
+        Game * gl = lastLevelLoserNodes[i];
+        //how to distribute the nodes if we have multiple of them
+        if(i<lastLevelLoserNodes.count-1){
+            //how many spots left?
+            
+            //old problem game or team?
+            if(totalNumberOfLosersDistributed - losersCount == 0){ //last teams
+                if(spotsLeft==losersCount){
+                    
+                    
+                }
+            }
+            else{
+                
+            }
+        }
+        
+        //Check for Last node
+        if(i==lastLevelLoserNodes.count-1){
+            //are the teams to be distributed are the last ones?
+            if(totalNumberOfLosersDistributed - losersCount == 0){
+                
+                if(spotsLeft==losersCount){//Checking if number of losers to distribute is equal to number of spots left
+                    if(isLeftEmpty(gl)) //Adding teams to left
+                    {
+                        gl.team1 = [loserTeamsToDistribute lastObject];
+                        [loserTeamsToDistribute removeLastObject];
+                        totalNumberOfLosersDistributed++;
+                        losersCount --;
+                        spotsLeft--;
+                    }
+                    
+                    if(isRightEmpty(gl)) //Ading teams to right
+                    {
+                        if(loserTeamsToDistribute.count >0){
+                            gl.team2 = [loserTeamsToDistribute lastObject];
+                            [loserTeamsToDistribute removeLastObject];
+                            totalNumberOfLosersDistributed++;
+                            losersCount --;
+                            spotsLeft--;
+                        }
+                    }
+                }
+            }
+            else{ //here we will be adding a game or team/s
+                //one free spot or more?
+                // NSUInteger loserleft =  totalNumberOfLosers - totalNumberOfLosersDistributed;
+                if(spotsLeft==1){
+                    Game *ng = [Game new];
+                    ng.parent = gl;
+                    gameCount++;
+                    ng.gameId = @(gameCount);
+                    
+                    if(isRightEmpty(gl)){
+                        gl.right = ng;
+                        
+                    }
+                    
+                    if(isLeftEmpty(gl)){
+                        gl.left= ng;
+                    }
+                    
+                    [newLastLevelLoserNodes addObject:ng];
+                    ng.team1 = [loserTeamsToDistribute lastObject];
+                    [loserTeamsToDistribute removeLastObject];
+                    totalNumberOfLosersDistributed++;
+                    losersCount --;
+                    
+                }
+                if(spotsLeft==2){
+                    if(loserTeamsToDistribute.count==1){
+                        gl.team1 = [loserTeamsToDistribute lastObject];
+                        [loserTeamsToDistribute removeLastObject];
+                        totalNumberOfLosersDistributed++;
+                        losersCount --;
+                        
+                        Game *ng = [Game new];
+                        gameCount++;
+                        ng.gameId = @(gameCount);
+                        
+                        ng.parent = gl;
+                        gl.right = ng;
+                        
+                        [newLastLevelLoserNodes addObject:ng];
+                    }
+                    else{
+                        Game *ng = [Game new];
+                        ng.parent = gl;
+                        gl.right = ng;
+                        ng.team1 =[loserTeamsToDistribute lastObject];
+                        [loserTeamsToDistribute removeLastObject];
+                        totalNumberOfLosersDistributed++;
+                        losersCount --;
+                        gameCount++;
+                        ng.gameId = @(gameCount);
+                        
+                        [newLastLevelLoserNodes addObject:ng];
+                        Game *ng1 = [Game new];
+                        ng1.parent = gl;
+                        gl.left = ng1;
+                        gameCount++;
+                        ng1.gameId = @(gameCount);
+                        
+                        
+                        ng1.team2 =[loserTeamsToDistribute lastObject];
+                        [loserTeamsToDistribute removeLastObject];
+                        totalNumberOfLosersDistributed++;
+                        losersCount --;
+                        [newLastLevelLoserNodes addObject:ng1];
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    //        if(isLeftEmpty(gl))
+    //        {
+    //            //either game or team
+    //            gl.left = @"";
+    //            if(losersCount>spotsLeft){
+    //                Game *ng = [Game new];
+    //                ng.parent = gl;
+    //                gl.left = ng;
+    //                ng.left = loserTeamsToDistribute.lastObject;
+    //                spotsLeft--;
+    //            }
+    //            ///f nt the last number of teams == number to distron
+    //        }
+    //
+    //        if(isRightEmpty(gl))
+    //        {
+    //            //either game or team
+    //            gl.right = @"";
+    //            if(losersCount>spotsLeft){
+    //                Game *ng = [Game new];
+    //                ng.parent = gl;
+    //                gl.right = ng;
+    //                ng.right = loserTeamsToDistribute.lastObject;
+    //                spotsLeft--;
+    //            }
+    //        }
+    //
+    //
+    //
+    //
+    //
+    //
+    //        //Case 1: we have one losing team
+    //        if(losersCount == 1){
+    //
+    //            //adding a teams that has bye
+    //            if(isLeftEmpty(gl))
+    //            {
+    //                gl.team1 = [loserTeamsToDistribute lastObject];
+    //                [loserTeamsToDistribute removeLastObject];
+    //                totalNumberOfLosersDistributed++;
+    //                losersCount --;
+    //
+    //            }
+    //            else if(isRightEmpty(gl)){
+    //                gl.team2 = [loserTeamsToDistribute lastObject];
+    //                [loserTeamsToDistribute removeLastObject];
+    //                totalNumberOfLosersDistributed++;
+    //                losersCount --;
+    //            }
+    //
+    //            //Make sure that there are still additional teams to be distributed
+    //            if(totalNumberOfLosersDistributed == totalNumberOfLosers){
+    //                //End of the story
+    //                break;
+    //            }
+    //            else{
+    //                //add a new game
+    //                Game *ng = [Game new];
+    //                ng.parent = gl;
+    //
+    //                if(isRightEmpty(gl)){
+    //                    gl.right = ng;
+    //                    ng.gameId = @(gameCount);
+    //                    gameCount ++;
+    //                }
+    //
+    //                if(isLeftEmpty(gl)){
+    //                    gl.left = ng;
+    //                    ng.gameId = @(gameCount);
+    //                    gameCount ++;
+    //
+    //                }
+    //
+    //                [newLastLevelLoserNodes addObject:ng];
+    //
+    //           }
+    //        }
+    //
+    //        //Case 2 multiple teams to distribute
+    //        //Adding game or just a team?
+    //
+    //        //so it depends
+    //        // if we have one team left or more  let's say we have only one
+    //        if(losersCount>1){
+    //
+    //            NSUInteger losersLeft = totalNumberOfLosers - totalNumberOfLosersDistributed ;
+    //            if(losersLeft == 1){
+    //
+    //            }
+    //
+    //            if(losersLeft == 2){
+    //                //check if it is available
+    //                if(isLeftEmpty(gl))
+    //                {
+    //                    gl.team1 = [loserTeamsToDistribute lastObject];
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                    totalNumberOfLosersDistributed++;
+    //                     losersCount --;
+    //                }
+    //                if(isRightEmpty(gl)){
+    //                    gl.team2 = [loserTeamsToDistribute lastObject];
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                    totalNumberOfLosersDistributed++;
+    //                    losersCount --;
+    //                }
+    //
+    //            }
+    //
+    //            if(losersLeft == 3){
+    //                //check what is available
+    //
+    //                if(isLeftEmpty(gl)&&isRightEmpty(gl)){
+    //                    gl.team1 = [loserTeamsToDistribute lastObject];
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                    totalNumberOfLosersDistributed++;
+    //
+    //                    //create a new game
+    //                    Game *ng = [Game new];
+    //                    ng.parent = gl;
+    //                    gl.right = ng;
+    //                    ng.gameId = @(gameCount);
+    //                    gameCount ++;
+    //
+    //                    [newLastLevelLoserNodes addObject:ng];
+    //                 }
+    //
+    //                if(!isLeftEmpty(gl)&&isRightEmpty(gl)){
+    //                {
+    //                    //Create a new game
+    //                    Game *ng = [Game new];
+    //                    ng.parent = gl;
+    //                    gl.right = ng;
+    //                    ng.team1 =[loserTeamsToDistribute lastObject];
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                     totalNumberOfLosersDistributed++;
+    //
+    //                    ng.team2 = [loserTeamsToDistribute lastObject];
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                    totalNumberOfLosersDistributed++;
+    //                    losersCount --;
+    //
+    //                    //create a new game
+    //
+    //                    ng.gameId = @(gameCount);
+    //                    gameCount ++;
+    //
+    //                    [newLastLevelLoserNodes addObject:ng];
+    //
+    //                }
+    //                }
+    //
+    //            }
+    //            if(losersLeft >= 4){
+    //
+    //                if(isLeftEmpty(gl))
+    //                {
+    //                    Game *ng = [Game new];
+    //                    ng.parent = gl;
+    //                    ng.team1 =[loserTeamsToDistribute lastObject];
+    //                    gl.left = ng;
+    //                    totalNumberOfLosersDistributed++;
+    //
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                    [newLastLevelLoserNodes addObject:ng];
+    //
+    //                    ng.parent = gl;
+    //                    gameCount ++;
+    //                    ng.gameId = @(gameCount);
+    //
+    //                }
+    //
+    //                if(isRightEmpty(gl))
+    //                {
+    //                    Game *ng1 = [Game new];
+    //                    gl.right = ng1;
+    //                    gameCount ++;
+    //                    ng1.gameId = @(gameCount);
+    //
+    //                    ng1.team2 =[loserTeamsToDistribute lastObject];
+    //                    [loserTeamsToDistribute removeLastObject];
+    //                    [newLastLevelLoserNodes addObject:ng1];
+    //                    totalNumberOfLosersDistributed++;
+    //                }
+    //            }
+    //        }
+    
+    //
+    //        if(totalNumberOfLosersDistributed == totalNumberOfLosers){
+    //            //End of the story
+    //            break;
+    //        }
+    //    }
+    
+    [lastLevelLoserNodes removeAllObjects];
+    [lastLevelLoserNodes addObjectsFromArray: newLastLevelLoserNodes];
+    
+}
+
+
+Game* buildLoserBracket(){
+    Game * lroot = [Game new];// final loser's game
+    lroot.gameId = @(gameCount);
+    gameCount++;
+    
+    // I think I should loop through the winners bracket...:
+    //
+    Tournament * t = [[Tournament alloc]init];
+    
+    [t addTeam:@"Janek / Taylor"];
+    [t addTeam:@"Keith/Megan "];
+    [t addTeam:@"Charlie/Chelsea"];
+    [t addTeam:@"Eric/Meghan"];
+    [t addTeam:@"Jack/Michelle"];
+    [t addTeam:@"Ian/Patchi"];
+    [t addTeam:@"Mallory/Zack"];
+    
+    [t setFormat:kSingleElimination];
+    
+    Game * rroot = [t getTournamentTree];
+    NSMutableArray * games =[NSMutableArray new];
+    NSMutableArray * queue= [NSMutableArray new];
+    [queue addObject:rroot];
+    
+    NSUInteger nodesInNextLevel = 0;
+    NSUInteger nodesInCurrentLevel = 1;
+    NSUInteger currentLevel = 0;
+    
+    totalNumberOfLosers = [t getNumberOfGames];
+    
+    
+    NSMutableArray * currentLevelNodes = [NSMutableArray new];
+    NSMutableArray * currentLoserLevelNodes = [NSMutableArray new];
+    NSMutableArray * nextLevelNodes = [NSMutableArray new];
+    
+    NSMutableArray * loserTeamsToDistribute = [NSMutableArray new];
+    [currentLevelNodes addObject: rroot];
+    [currentLoserLevelNodes addObject:lroot];
+    
+    while(queue.count>0){
+        Game * g= queue.lastObject;
+        //        NSLog(@"Game g %@",g);
+        [queue removeLastObject];
+        nodesInCurrentLevel--;
+        
+        //loop through all games at this level probably it can be called after the level is traversed
+        
+        if(g.team1!=NULL &&g.team2!=NULL){
+            [games addObject:g];
+        }
+        
+        NSArray *nodes =   g.getChildrenNodes;
+        
+        for(Game * child in nodes){
+            [queue insertObject:child atIndex:0];
+            nodesInNextLevel++;
+            [nextLevelNodes addObject:child];
+        }
+        
+        if(nodesInCurrentLevel == 0){
+            //here we know all the nodes on current level so we should determine what to do with the losers
+            
+            for (Game * gl in currentLevelNodes){
+                //create a list of losers to redistribute
+                Team * t = [Team new];
+                t.name = [NSString stringWithFormat:@"L%@",gl.number];
+                [loserTeamsToDistribute addObject:t];
+            }
+            
+            distributeTeams(currentLoserLevelNodes, loserTeamsToDistribute);
+            [currentLevelNodes removeAllObjects];
+            [currentLevelNodes addObjectsFromArray:nextLevelNodes];
+            [nextLevelNodes removeAllObjects];
+            
+            nodesInCurrentLevel = nodesInNextLevel;
+            // totalNumberOfNodes = nodesInNextLevel;
+            
+            
+            nodesInNextLevel = 0;
+            currentLevel++;
+            
+            
+        }
+    }
+    
+    return lroot;
+}
 
 
