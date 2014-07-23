@@ -74,7 +74,7 @@ NSUInteger totalNumberOfLosers =0;
 NSUInteger gameCount =0;
 
 
-Game * createDDBracket(NSUInteger nrteams){
+    Game * createDDBracket(NSUInteger nrteams){
     Game * secondFinalGame = [Game new];
     Game * finalGame = [Game new];
     Game * losers = [Game new];

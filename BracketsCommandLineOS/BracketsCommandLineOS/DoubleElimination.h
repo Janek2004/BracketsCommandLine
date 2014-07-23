@@ -7,7 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TournamentProtocol.h"
 
-@interface DoubleElimination : NSObject
+@interface DoubleElimination : NSObject<TournamentProtocol>
+ @property (readonly) NSUInteger numberOfTeams;
+ @property (readonly) NSUInteger numberOfGames;
+ @property (readonly) NSUInteger numberOfLevels;
 
 @end
