@@ -37,12 +37,84 @@
 
 @interface DoubleElimination()
 
- @property (nonatomic,strong) id finalGame;
+ @property (nonatomic,strong) id  secondFinalGame;
  @property (nonatomic,strong) NSMutableArray * teams;
+
 
 @end
 
 @implementation DoubleElimination
+
+
+Game* searchForGame(Game * root){
+    NSMutableArray * games =[NSMutableArray new];
+    NSMutableArray * queue= [NSMutableArray new];
+    
+    [queue addObject:root];
+    
+    
+    while(queue.count>0){
+        Game * g= queue.lastObject;
+        if(g.number isEqual:root.number){
+            return g;
+            break;
+        }
+        
+        [queue removeLastObject];
+        //loop through all games at this level probably it can be called after the level is traversed
+        
+        if(g.team1!=NULL &&g.team2!=NULL){
+            [games addObject:g];
+        }
+        
+        NSArray *nodes =   g.getChildrenNodes;
+        
+        for(Game * child in nodes){
+            [queue insertObject:child atIndex:0];
+        }
+        
+    }
+    return nil;
+    
+}
+
+
+
+-(id)searchForGame:(Game *)game{
+    Game * g =[self.secondFinalGame copy];
+    //while(g){
+    if([g.number isEqual:game.number]){
+        {
+            return g;
+        }
+        
+        }
+    //}
+  return g;
+}
+
+
+-(id)searchForGame:(Game *)game root:(Game *)root{
+    
+    if(root==NULL){
+        return NULL;
+    }
+    
+    if(game.number.integerValue<root.number.integerValue){
+        
+    }
+    else if(game.number.integerValue>root.number.integerValue){
+        
+    }
+    else{
+    
+    }
+    
+
+}
+
+
+
 
 -(NSUInteger)numberOfGames{
     switch (self.numberOfTeams) {
@@ -67,7 +139,7 @@
 
 
 Game * createDDBracket(NSUInteger nrteams){
-    Game * secondFinalGame = [Game new];
+    secondFinalGame = [Game new];
     Game * finalGame = [Game new];
     Game * losers = [Game new];
     Game * winners = [Game new];
