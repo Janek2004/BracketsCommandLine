@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSString * name;
 @property (nonatomic, strong) NSString * loserteamId;
-@property (nonatomic, strong) NSNumber * seed;
+@property (nonatomic, strong) NSNumber * gameSeed;
 @property (nonatomic, assign) BOOL active;
 @property (nonatomic,strong, readonly)id stats;
 
@@ -22,6 +22,7 @@
 -(void)addPlayer:(id)player;
 -(void)removePlayer:(id)player;
 -(void)updateStatsWithScore:(id)score;
+-(void)updateSeed:(NSNumber *)seed;
 
 
 -(void)resetStats;

@@ -49,15 +49,17 @@
     [self.stats  addGameResult:[score getPointsForTeam:self won:YES] negativePoints:[score getPointsForTeam:self won:NO] victory: [score getSetsForTeam:self won:YES] loss: [score getSetsForTeam:self won:NO]];
 
 }
-
+-(void)updateSeed:(NSNumber *)seed;{
+    _gameSeed = seed;
+}
 
 //players
 -(void)addPlayer:(id)player;{}
 -(void)removePlayer:(id)player;{}
 -(NSString *)description{
     NSMutableString * s = [NSMutableString new];
-    if(self.seed){
-        [s appendString:[NSString stringWithFormat:@"Seed: %@",self.seed]];
+    if(self.gameSeed){
+        [s appendString:[NSString stringWithFormat:@"Seed: %@",self.gameSeed]];
     }
     if(self.name){
         [s appendString:[NSString stringWithFormat:@"Name: %@",self.name]];

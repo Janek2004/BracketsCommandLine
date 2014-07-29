@@ -21,9 +21,10 @@
     @property (nonatomic,strong)NSMutableArray * players;
     @property (nonatomic,strong)NSMutableArray * stages;
 
-    @property (nonatomic,strong) NSString *  tournamentId;
+    @property (nonatomic,strong)  NSString *  tournamentId;
+    @property (nonatomic, assign) NSUInteger * currentTournamentIndex;
+
     @property (nonatomic,strong) id<TournamentProtocol> tournament;
-    
 
 @end
 
@@ -113,10 +114,7 @@
 
 -(instancetype)initWithNumberOfTeams:(int)numberofteams{
     self = [self init];
-   
-    
-    
-    
+ 
     return self;
 }
 
@@ -132,21 +130,19 @@
     [self.teams addObject:team];
     int i =1;
     for(id team in self.teams){
-        [team setSeed:[NSNumber numberWithInt:i]];
+        [team setGameSeed:[NSNumber numberWithInt:i]];
         i++;
     }
     
     [self.tournament buildBracketWithTeams:self.teams];
     
-    //recalculate bracket
-    //[self.tournament displayBracket];
 }
 
 -(void)removeTeam:(id)team{
     [self.teams removeObject:team];
     
     [self.teams enumerateObjectsUsingBlock:^(Team * team, NSUInteger idx, BOOL *stop) {
-         [team setSeed:[NSNumber numberWithInteger:idx]];
+         [team setGameSeed:[NSNumber numberWithInteger:idx]];
     }];
 
     [self.tournament buildBracketWithTeams:self.teams];

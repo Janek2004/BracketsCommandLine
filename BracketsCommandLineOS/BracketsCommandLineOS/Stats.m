@@ -58,7 +58,7 @@
 
 
 -(NSString *)description{
-    return [NSString stringWithFormat:@"Victories: %lu \n Losses: %lu \n Points Won \n %lu Points Lost %lu \n Difference %ld",self.numberOfVictories, self.numberOfLosses, self.numberOfPointsWon, self.numberOfPointsLost,(long)self.numberOfPointsDifference];
+    return [NSString stringWithFormat:@"Victories: %lu \n Losses: %lu \n Points Won \n %lu Points Lost %lu \n Difference %ld",(unsigned long)self.numberOfVictories, (unsigned long)self.numberOfLosses, (unsigned long)self.numberOfPointsWon, (unsigned long)self.numberOfPointsLost,(long)self.numberOfPointsDifference];
 }
 
 

@@ -373,9 +373,9 @@
         
         if(g.team1){
             //Resetting stats
-            if(![stats objectForKey:[g.team1 seed]]){
+            if(![stats objectForKey:[g.team1 gameSeed]]){
                 [g.team1 resetStats];
-                [stats setObject:g forKey:[g.team1 seed]];
+                [stats setObject:g forKey:[g.team1 gameSeed]];
             }
             [g.team1 updateStatsWithScore:g.score];
             
@@ -384,7 +384,7 @@
         if(g.team2) {
             if(![stats objectForKey:g.team2]){
                 [g.team2 resetStats];
-                [stats setObject:g forKey:[g.team2 seed]];
+                [stats setObject:g forKey:[g.team2 gameSeed]];
             }
             [g.team2 updateStatsWithScore:g.score];
         }
@@ -439,10 +439,10 @@
     }
 }
 
--(id)getTeamsInOrder{
-    return self.teams;
+-(id)getTeamsInOrder;{
+    
+    return  [self.utilities getTeamsInOrder:self.teams];
 }
-
 
 
 @end

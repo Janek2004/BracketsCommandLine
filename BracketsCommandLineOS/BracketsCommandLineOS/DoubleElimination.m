@@ -7,7 +7,8 @@
 //
 
 #import "DoubleElimination.h"
-#import "SingleElimination.h"
+#import "TournamentUtilities.h"
+
 /**
  This variation of the tournament will have two nodes of tournament
   * winners - winners will have original number of teams let's say n
@@ -37,16 +38,32 @@
 
 @interface DoubleElimination()
 
- @property (nonatomic,strong) id  secondFinalGame;
+ @property (nonatomic,strong) Game*  secondFinalGame;
  @property (nonatomic,strong) NSMutableArray * teams;
-
+@property (nonatomic,strong) TournamentUtilities * utilities;
 
 @end
 
 @implementation DoubleElimination
 
+-(instancetype)init{
+    self = [super init];
+    if(self)
+    {
+        _utilities = [TournamentUtilities new];
+    }
+    return self;
+}
 
-Game* searchForGame(Game * root){
+
+/**
+ *  Searches for gme
+ *
+ *  @param root root of the tree
+ *
+ *  @return game uyou are looking for
+ */
+-(Game*) searchForGame:(Game *) root{
     NSMutableArray * games =[NSMutableArray new];
     NSMutableArray * queue= [NSMutableArray new];
     
@@ -55,7 +72,7 @@ Game* searchForGame(Game * root){
     
     while(queue.count>0){
         Game * g= queue.lastObject;
-        if(g.number isEqual:root.number){
+        if([g.number isEqual:root.number]){
             return g;
             break;
         }
@@ -78,44 +95,17 @@ Game* searchForGame(Game * root){
     
 }
 
-
-
--(id)searchForGame:(Game *)game{
-    Game * g =[self.secondFinalGame copy];
-    //while(g){
-    if([g.number isEqual:game.number]){
-        {
-            return g;
-        }
+-(void)setScore:(id)score game:(id)game{
         
-        }
-    //}
-  return g;
-}
-
-
--(id)searchForGame:(Game *)game root:(Game *)root{
-    
-    if(root==NULL){
-        return NULL;
-    }
-    
-    if(game.number.integerValue<root.number.integerValue){
-        
-    }
-    else if(game.number.integerValue>root.number.integerValue){
-        
-    }
-    else{
-    
-    }
-    
-
 }
 
 
 
-
+/**
+ *  Returns number of games
+ *
+ *  @return number of games
+ */
 -(NSUInteger)numberOfGames{
     switch (self.numberOfTeams) {
         case 3:
@@ -127,6 +117,8 @@ Game* searchForGame(Game * root){
             break;
     }
 }
+
+
 /**
  *  Setting up teams
  *
@@ -136,24 +128,24 @@ Game* searchForGame(Game * root){
     self.teams = teams;
 }
 
+-(void)buildBracketWithTeams:(NSArray *)teams{
+    [self createDDBracket:teams.count];
+}
 
-
-Game * createDDBracket(NSUInteger nrteams){
-    secondFinalGame = [Game new];
+-(Game *) createDDBracket:(NSUInteger) nrteams
+{
+    _secondFinalGame = [Game new];
     Game * finalGame = [Game new];
     Game * losers = [Game new];
     Game * winners = [Game new];
     
     Team  *t0 = [Team new];
-    secondFinalGame.team2  = t0;
-    
-    
-    
+    _secondFinalGame.team2  = t0;
     
     switch (nrteams) {
         case 3:
         {
-            secondFinalGame.number = @5;
+            _secondFinalGame.number = @5;
             finalGame.number = @4;
             losers.number= @3;
             winners.number =@2;
@@ -177,7 +169,7 @@ Game * createDDBracket(NSUInteger nrteams){
             
         case 4:
         {
-            secondFinalGame.number = @7;
+            _secondFinalGame.number = @7;
             finalGame.number = @6;
             losers.number= @5;
             winners.number =@3;
@@ -214,8 +206,8 @@ Game * createDDBracket(NSUInteger nrteams){
             break;
     }
     
-    secondFinalGame.left = finalGame;
-    finalGame.parent = secondFinalGame;
+    _secondFinalGame.left = finalGame;
+    finalGame.parent = _secondFinalGame;
     finalGame.left = winners;
     finalGame.right =losers;
     
@@ -223,11 +215,45 @@ Game * createDDBracket(NSUInteger nrteams){
     losers.parent = finalGame;
     
     
-    
-    return secondFinalGame;
+    return _secondFinalGame;
     
 }
+-(id)getTournamentSchedule;{
+    return [self getTournamentSchedule:_secondFinalGame];
+}
 
+-(id)getTournamentSchedule:(Game *) root{
+    NSMutableArray * games =[NSMutableArray new];
+    NSMutableArray * queue= [NSMutableArray new];
+    
+    [queue addObject:root];
+    
+    
+    while(queue.count>0){
+        Game * g= queue.lastObject;
+        [queue removeLastObject];
+        //loop through all games at this level probably it can be called after the level is traversed
+        
+        if(g.team1!=NULL &&g.team2!=NULL){
+            [games addObject:g];
+        }
+        
+        NSArray *nodes =   g.getChildrenNodes;
+        
+        for(Game * child in nodes){
+            [queue insertObject:child atIndex:0];
+        }
+        
+    }
+     [games sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"number" ascending:YES]]];
+    
+    return games;
+}
+
+-(id)getTeamsInOrder;{
+    
+    return  [self.utilities getTeamsInOrder:self.teams];
+}
 
 
 @end
